@@ -1,0 +1,8 @@
+instance_type: c1.medium
+spot_price: null
+volume: vol-024fba81d276d7e32
+keypair: mba_wwcrc
+image_id: ami-a8b5bbcb
+security_group: default
+region: ap-southeast-2
+zone: ap-southeast-2a

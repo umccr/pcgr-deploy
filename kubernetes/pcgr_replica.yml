@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod 
+metadata:
+  name: deployment-pcgr
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pcgr
+    spec:
+      containers:
+      - name: pcgr
+        image: pcgr:0.3.4
+      imagePullSecrets:
+        - dockerhubsecret

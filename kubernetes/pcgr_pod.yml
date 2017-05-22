@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Pod 
+metadata:
+  name: pod-pcgr
+spec:
+  containers:
+  - name: pcgr
+    image: sigven/pcgr:0.3.4
