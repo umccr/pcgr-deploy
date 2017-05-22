@@ -13,6 +13,4 @@ Deploying PCGR
 Kubernetes
 ==========
 
-Open ended experiment for now, there are some errors that need attention:
-
-https://twitter.com/braincode/status/865250048480817152
+Open ended experiment for now, there are some errors that [need some attention](https://twitter.com/braincode/status/865250048480817152).

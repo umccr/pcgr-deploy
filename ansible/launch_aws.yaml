@@ -14,11 +14,8 @@
         spot_price: "{{ spot_price }}"
         image: "{{ image_id }}"
         keypair: "{{ keypair }}"
-#        vpc_subnet_id: "{{ vpc_subnet }}"
-#        instance_profile_name: "{{ iam_role }}"
         region: "{{ region }}"
         zone: "{{ zone }}"
-#        assign_public_ip: yes
         count: 1
         wait: yes
         state: present
@@ -46,6 +43,7 @@
     - action: setup
   tasks:
     - include_vars: project_vars.yaml
+
     - name: Create ext4 filesystem if not present
       filesystem: fstype=ext4 dev=/dev/xvdf
       become: true
@@ -54,50 +52,53 @@
       become: true
       mount: name=/mnt/work src=/dev/xvdf fstype=ext4 state=mounted
 
-	- file:
+    - file:
       path: /mnt/work
       owner: ubuntu
       group: ubuntu
       mode: 0644
 
     - name: Update system and install basics
-  	  apt: update_cache=yes
+      apt: update_cache=yes
       become: true
     - apt: name="{{ item }}"
       become: true
       with_items: [git, unzip, wget, tar, gzip, bzip2, docker.io]
-      ignore_errors: true
 
-	- name: Download and unpack PCGR
-	  unarchive:
-	    src: https://github.com/sigven/pcgr/archive/v0.3.4.tar.gz
+    - name: Download and unpack PCGR
+      unarchive:
+      src: https://github.com/sigven/pcgr/archive/v0.3.4.tar.gz
+        creates: /mnt/work/v*.tar.gz
         dest: /mnt/work/v0.3.4.tar.gz
-    	remote_src: True
-	
-	- name: Download Google Drive downloader
- 		get_url:
-		url: https://raw.githubusercontent.com/Nanolx/patchimage/master/tools/gdown.pl
-		dest: /mnt/work/gdown.pl
-		mode: 0644
+      remote_src: True
+
+    - name: Download Google Drive downloader
+      get_url:
+      url: https://raw.githubusercontent.com/Nanolx/patchimage/master/tools/gdown.pl
+      dest: /mnt/work/gdown.pl
+      mode: 0644
 
     - name: Download PCGRs data pack
       command: perl gdown.pl 'https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk&export=download' /mnt/work/pcgr.databundle.GRCh37.20170420.tgz
-    
-	- name: Unpack PCGR data pack
-	  unarchive:
-	    src: /mnt/work/pcgr.databundle.*.tgz
-        dest: /mnt/work
+      creates: /mnt/work/pcgr.databundle.*.*.tgz
 
-	- name: Add user to docker group
-	  user: name=ubuntu groups=docker append=yes
-	  sudo: true
-	
-	- name: Refresh group info
-	  command: newgrp docker
+    - name: Unpack PCGR data pack
+      unarchive:
+      src: /mnt/work/pcgr.databundle.*.tgz
+        creates: /mnt/work/pcgr-0.3.4/data
+        dest: /mnt/work/pcgr-0.3.4
+
+    - name: Add user to docker group
+      user: name=ubuntu groups=docker append=yes
+      sudo: true
+
+    - name: Refresh group info
+      become: false
+      command: newgrp docker
 
     - name: Pull PCGR docker image
-  	  docker_image:
-      	name: sigven/pcgr:0.3.4
+      docker_image:
+      name: sigven/pcgr:0.3.4
 
-	- name: Run example PCGR report
-	  command: python pcgr.py --input_vcf tumor_sample.COAD.vcf.gz --input_cna_segments tumor_sample.COAD.cna.tsv /mnt/work/pcgr-0.3.4 /mnt/work/pcgr-0.3.4/examples tumor_sample.COAD
+#- name: Run example PCGR report
+#  command: ./pcgr.py --input_vcf examples/tumor_sample.COAD.vcf.gz --input_cna_segments examples/tumor_sample.COAD.cna.tsv /mnt/work/pcgr-0.3.4 output tumor_sample.COAD

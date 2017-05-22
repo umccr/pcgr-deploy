@@ -1,4 +1,4 @@
-instance_type: c1.medium
+instance_type: t2.large
 spot_price: null
 volume: vol-024fba81d276d7e32
 keypair: mba_wwcrc
