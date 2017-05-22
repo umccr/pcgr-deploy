@@ -91,7 +91,7 @@
 
     - name: Unpack PCGR data pack
       unarchive:
-        src: /mnt/work/pcgr.databundle.*.tgz
+        src: /mnt/work/pcgr.databundle.GRCh37.20170420.tgz
         creates: /mnt/work/pcgr-*/data
         dest: /mnt/work/pcgr-0.3.4
 
