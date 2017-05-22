@@ -2,7 +2,7 @@ instance_type: t2.large
 spot_price: null
 volume: vol-024fba81d276d7e32
 keypair: mba_wwcrc
-image_id: ami-a8b5bbcb
+image_id: ami-44b5bb27
 security_group: default
 region: ap-southeast-2
 zone: ap-southeast-2a
