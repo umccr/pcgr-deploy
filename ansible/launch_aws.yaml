@@ -69,7 +69,7 @@
     
     - apt: name="{{ item }}"
       become: true
-      with_items: [git, unzip, wget, tar, gzip, bzip2, docker.io]
+      with_items: [git, unzip, wget, tar, gzip, bzip2, docker.io, tabix]
 
     - name: Download and unpack PCGR
       unarchive:
@@ -92,7 +92,8 @@
     - name: Unpack PCGR data pack
       unarchive:
         src: /mnt/work/pcgr.databundle.GRCh37.20170420.tgz
-        creates: /mnt/work/pcgr-*/data
+        remote_src: yes
+        creates: /mnt/work/pcgr-0.3.4/data
         dest: /mnt/work/pcgr-0.3.4
 
     - name: Add user to docker group
