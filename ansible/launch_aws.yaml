@@ -69,7 +69,7 @@
     
     - apt: name="{{ item }}"
       become: true
-      with_items: [git, unzip, wget, tar, gzip, bzip2, docker.io, tabix]
+      with_items: [git, unzip, wget, tar, gzip, bzip2, docker.io, python-docker, tabix]
 
     - name: Download and unpack PCGR
       unarchive:
