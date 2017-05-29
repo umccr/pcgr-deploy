@@ -1,5 +1,5 @@
-instance_type: t2.large
-spot_price: null
+instance_type: c4.large
+spot_price: 0.08
 volume: vol-024fba81d276d7e32
 keypair: mba_wwcrc
 image_id: ami-44b5bb27
