@@ -14,7 +14,12 @@ ssh ubuntu@ec2-54-66-250-119.ap-southeast-2.compute.amazonaws.com
 cd /mnt/work/pcgr-0.3.4 && ./run.sh
 ```
 
-Also the run script does not exist on PCGR, see [an example](https://github.com/sigven/pcgr#step-4-run-example) and adjust it to your inputs.
+Also the `run.sh` script does not exist on PCGR, see [an example](https://github.com/sigven/pcgr#step-4-run-example) and adjust it to your inputs. Or create your own `run.sh`, i.e:
+
+```
+#!/bin/sh
+time ./pcgr.py --input_vcf cov50-ensemble-annotated-decomposed.vcf.gz --input_cna_segments examples/tumor_sample.COAD.cna.tsv /mnt/work/pcgr-0.3.4 output UMCCR
+```
 
 Deploying PCGR
 ==============
