@@ -105,6 +105,7 @@
       command: newgrp docker
 
     - name: Pull PCGR docker image
+      become: false
       docker_image:
         name: sigven/pcgr:0.3.4
 
