@@ -1,0 +1,67 @@
+---
+- include_vars: project_vars.yaml
+- name: Create ext4 filesystem if not present
+  filesystem: fstype=ext4 dev={{ ansible_mounts[1].device }}
+  become: true
+
+- name: Mount work volume
+  become: true
+  mount: name=/mnt/work src={{ ansible_mounts[1].device }} fstype=ext4 state=mounted
+
+- name: Give ubuntu rights to write on /mnt/work
+  become: true
+  file:
+    path: /mnt/work
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: 0755
+
+- name: Update system and install basics
+  apt: update_cache=yes
+  become: true
+
+- apt: name="{{ item }}"
+  become: true
+  with_items: [git, unzip, wget, tar, gzip, bzip2, docker.io, python-docker, tabix]
+
+- name: Download and unpack PCGR
+  unarchive:
+    src: https://github.com/sigven/pcgr/archive/v0.3.4.tar.gz
+    creates: /mnt/work/v*.tar.gz
+    dest: /mnt/work
+    remote_src: True
+
+- name: Download Google Drive downloader
+  get_url:
+    url: https://raw.githubusercontent.com/Nanolx/patchimage/master/tools/gdown.pl
+    dest: /mnt/work/gdown.pl
+    mode: 0644
+
+- name: Download PCGRs data pack
+  command: perl /mnt/work/gdown.pl 'https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk&export=download' /mnt/work/pcgr.databundle.GRCh37.20170420.tgz
+  args:
+    creates: /mnt/work/pcgr.databundle.*.*.tgz
+
+- name: Unpack PCGR data pack
+  unarchive:
+    src: /mnt/work/pcgr.databundle.GRCh37.20170420.tgz
+    remote_src: yes
+    creates: /mnt/work/pcgr-0.3.4/data
+    dest: /mnt/work/pcgr-0.3.4
+
+- name: Add user to docker group
+  user: name=ubuntu groups=docker append=yes
+  sudo: true
+
+- name: Refresh group info
+  become: false
+  command: newgrp docker
+
+- name: Pull PCGR docker image
+  become: false
+  docker_image:
+    name: sigven/pcgr:0.3.4
+
+#- name: Run example PCGR report
+#  command: ./pcgr.py --input_vcf examples/tumor_sample.COAD.vcf.gz --input_cna_segments examples/tumor_sample.COAD.cna.tsv /mnt/work/pcgr-0.3.4 output tumor_sample.COAD
