@@ -1,5 +1,12 @@
 ---
 - include_vars: project_vars.yaml
+
+- name: Setup local firewall
+  ufw:
+    state: enabled
+    rule: allow
+    name: OpenSSH
+
 - name: Create ext4 filesystem if not present
   filesystem: fstype=ext4 dev={{ ansible_mounts[1].device }}
   become: true
@@ -23,9 +30,70 @@
 
 - apt: name="{{ item }}"
   become: true
-  with_items: [git, unzip, wget, tar, gzip, bzip2, docker.io, python-docker, tabix]
+  with_items: [git, unzip, wget, tar, gzip, bzip2, docker.io, python-docker, tabix, nfs-common]
 
-- name: Download and unpack PCGR
+- name: Add SSH keys for UMCCR team
+  authorized_key:
+    user: ubuntu
+    state: present
+    key: '{{ item }}'
+  with_file:
+    - public_keys/ohofmann.ssh
+
+- name: Add HPC LDAP group to instance
+  group:
+    gid: 6034
+    name: gx8
+#groupadd -g <gid in ldap> <Your NCI Project ID>
+#groupadd -g 6034 gx8
+
+- name: Add HPC LDAP user to instance
+  become: true
+  user:
+    uid: 11937
+    name: gx8_nfs
+#adduser -u <uid in ldap> <project_nfs user>
+#adduser -u 11937 gx8_nfs
+
+- name: Mount HPC volume
+  mount:
+    path: /mnt/raijin
+    src: gdata3-nfs.nci.org.au:/mnt/gdata3/gx8/data
+    fstype: nfs
+    opts: hard,fg,defaults,nosuid,exec,ro,noatime,intr,rsize=32768,wsize=32768
+    state: mounted
+# - name: Mount the HPC volume
+#   command: mount -t nfs gdata3-nfs.nci.org.au:/mnt/gdata3/gx8/data /mnt/raijin -o hard,fg,defaults,nosuid,exec,ro,noatime,intr,rsize=32768,wsize=32768
+
+- name: Restore tenjin docker state
+  notify: stop docker
+  unarchive:
+    src: /mnt/raijin/PCGR/tenjin_docker.tbz2
+    dest: /var/lib/docker
+    remote_src: yes
+
+- name: Add user to docker group
+  become: true
+  user: name=ubuntu groups=docker append=yes
+
+- name: Refresh group info
+  become: false
+  command: newgrp docker
+
+- name: Create PCGR data dir
+  file:
+    path: /mnt/work/pcgr-0.3.4/data
+    state: directory
+
+- name: Restore PCGR datapack from HPC filesystem
+  notify: restart docker
+  unarchive:
+    src: /mnt/raijin/PCGR/pcgr.databundle.GRCh37.20170420.tgz
+    dest: /mnt/work/pcgr-0.3.4/data
+    creates: /mnt/work/pcgr-0.3.4/data/.vep
+    remote_src: yes
+
+- name: Download and unpack PCGR release
   unarchive:
     src: https://github.com/sigven/pcgr/archive/v0.3.4.tar.gz
     creates: /mnt/work/v*.tar.gz
@@ -43,25 +111,15 @@
   args:
     creates: /mnt/work/pcgr.databundle.*.*.tgz
 
-- name: Unpack PCGR data pack
-  unarchive:
-    src: /mnt/work/pcgr.databundle.GRCh37.20170420.tgz
-    remote_src: yes
-    creates: /mnt/work/pcgr-0.3.4/data
-    dest: /mnt/work/pcgr-0.3.4
-
-- name: Add user to docker group
-  user: name=ubuntu groups=docker append=yes
-  sudo: true
-
-- name: Refresh group info
-  become: false
-  command: newgrp docker
-
-- name: Pull PCGR docker image
-  become: false
-  docker_image:
-    name: sigven/pcgr:0.3.4
-
-#- name: Run example PCGR report
-#  command: ./pcgr.py --input_vcf examples/tumor_sample.COAD.vcf.gz --input_cna_segments examples/tumor_sample.COAD.cna.tsv /mnt/work/pcgr-0.3.4 output tumor_sample.COAD
+#- name: Unpack PCGR data pack
+#  become: true
+#  unarchive:
+#    owner: ubuntu
+#    src: /mnt/work/pcgr.databundle.GRCh37.20170420.tgz
+#    remote_src: yes
+#    creates: /mnt/work/pcgr-0.3.4/data/.vep
+#    dest: /mnt/work/pcgr-0.3.4
+#- name: Pull PCGR docker image
+#  become: true
+#  docker_image:
+#    name: sigven/pcgr:0.3.4

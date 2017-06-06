@@ -1,0 +1,14 @@
+---
+handlers:
+  - name: restart docker
+    service: name=docker state=restarted
+    become: yes
+    listen: restart docker
+  - name: stop docker
+    service: name=docker state=stopped
+    become: yes
+    listen: stop docker
+  - name: start docker
+    service: name=docker state=started
+    become: yes
+    listen: start docker
