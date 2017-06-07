@@ -77,22 +77,14 @@
     rule: allow
     name: OpenSSH
 
-- name: Restore tenjin docker state
-  notify: stop docker
-  unarchive:
-    src: /mnt/raijin/data/PCGR/tenjin_docker.tbz2
-    dest: /var/lib/docker
-    remote_src: yes
-
 - name: Create PCGR data dir
   file:
     path: /mnt/work/pcgr-0.3.4/data
     state: directory
 
 - name: Restore PCGR datapack from HPC filesystem
-  notify: restart docker
   unarchive:
-    src: /mnt/raijin/data/PCGR/pcgr.databundle.GRCh37.20170420.tgz
+    src: /mnt/raijin/PCGR/pcgr.databundle.GRCh37.20170420.tgz
     dest: /mnt/work/pcgr-0.3.4/data
     creates: /mnt/work/pcgr-0.3.4/data/.vep
     remote_src: yes
@@ -100,6 +92,11 @@
 - name: Download and unpack PCGR release
   unarchive:
     src: https://github.com/sigven/pcgr/archive/v0.3.4.tar.gz
-    creates: /mnt/work/v*.tar.gz
+    creates: /mnt/work/pcgr-0.3.4
     dest: /mnt/work
     remote_src: True
+
+- name: Pull PCGR docker image
+  become: true
+  docker_image:
+    name: sigven/pcgr:0.3.4

@@ -1,12 +1,9 @@
 - name: restart docker
+  become: yes
   service: name=docker state=restarted
-  become: yes
-  listen: restart docker
 - name: stop docker
+  become: yes
   service: name=docker state=stopped
-  become: yes
-  listen: stop docker
 - name: start docker
-  service: name=docker state=started
   become: yes
-  listen: start docker
+  service: name=docker state=started
