@@ -1,17 +1,11 @@
 ---
 - include_vars: project_vars.yaml
 
-- name: Setup local firewall
-  ufw:
-    state: enabled
-    rule: allow
-    name: OpenSSH
-
 - name: Create ext4 filesystem if not present
   filesystem: fstype=ext4 dev={{ ansible_mounts[1].device }}
   become: true
 
-- name: Mount work volume
+- name: Mount local work volume
   become: true
   mount: name=/mnt/work src={{ ansible_mounts[1].device }} fstype=ext4 state=mounted
 
@@ -25,12 +19,22 @@
     mode: 0755
 
 - name: Update system and install basics
-  apt: update_cache=yes
   become: true
-
-- apt: name="{{ item }}"
-  become: true
-  with_items: [git, unzip, wget, tar, gzip, bzip2, docker.io, python-docker, tabix, nfs-common]
+  package: 
+    name: "{{ item }}"
+    state: installed
+    update_cache: yes
+  with_items:
+      - git
+      - unzip
+      - wget
+      - tar
+      - gzip
+      - bzip2
+      - docker.io
+      - python-docker
+      - tabix
+      - nfs-common
 
 - name: Add SSH keys for UMCCR team
   authorized_key:
@@ -40,20 +44,24 @@
   with_file:
     - public_keys/ohofmann.ssh
 
+- name: Add user to docker group
+  become: true
+  user: name=ubuntu groups=docker append=yes
+
 - name: Add HPC LDAP group to instance
   group:
     gid: 6034
     name: gx8
-#groupadd -g <gid in ldap> <Your NCI Project ID>
-#groupadd -g 6034 gx8
 
 - name: Add HPC LDAP user to instance
   become: true
   user:
     uid: 11937
     name: gx8_nfs
-#adduser -u <uid in ldap> <project_nfs user>
-#adduser -u 11937 gx8_nfs
+
+- name: Refresh group info
+  become: false
+  command: newgrp docker
 
 - name: Mount HPC volume
   mount:
@@ -62,23 +70,19 @@
     fstype: nfs
     opts: hard,fg,defaults,nosuid,exec,ro,noatime,intr,rsize=32768,wsize=32768
     state: mounted
-# - name: Mount the HPC volume
-#   command: mount -t nfs gdata3-nfs.nci.org.au:/mnt/gdata3/gx8/data /mnt/raijin -o hard,fg,defaults,nosuid,exec,ro,noatime,intr,rsize=32768,wsize=32768
+
+- name: Setup local firewall
+  ufw:
+    state: enabled
+    rule: allow
+    name: OpenSSH
 
 - name: Restore tenjin docker state
   notify: stop docker
   unarchive:
-    src: /mnt/raijin/PCGR/tenjin_docker.tbz2
+    src: /mnt/raijin/data/PCGR/tenjin_docker.tbz2
     dest: /var/lib/docker
     remote_src: yes
-
-- name: Add user to docker group
-  become: true
-  user: name=ubuntu groups=docker append=yes
-
-- name: Refresh group info
-  become: false
-  command: newgrp docker
 
 - name: Create PCGR data dir
   file:
@@ -88,7 +92,7 @@
 - name: Restore PCGR datapack from HPC filesystem
   notify: restart docker
   unarchive:
-    src: /mnt/raijin/PCGR/pcgr.databundle.GRCh37.20170420.tgz
+    src: /mnt/raijin/data/PCGR/pcgr.databundle.GRCh37.20170420.tgz
     dest: /mnt/work/pcgr-0.3.4/data
     creates: /mnt/work/pcgr-0.3.4/data/.vep
     remote_src: yes
@@ -99,27 +103,3 @@
     creates: /mnt/work/v*.tar.gz
     dest: /mnt/work
     remote_src: True
-
-- name: Download Google Drive downloader
-  get_url:
-    url: https://raw.githubusercontent.com/Nanolx/patchimage/master/tools/gdown.pl
-    dest: /mnt/work/gdown.pl
-    mode: 0644
-
-- name: Download PCGRs data pack
-  command: perl /mnt/work/gdown.pl 'https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk&export=download' /mnt/work/pcgr.databundle.GRCh37.20170420.tgz
-  args:
-    creates: /mnt/work/pcgr.databundle.*.*.tgz
-
-#- name: Unpack PCGR data pack
-#  become: true
-#  unarchive:
-#    owner: ubuntu
-#    src: /mnt/work/pcgr.databundle.GRCh37.20170420.tgz
-#    remote_src: yes
-#    creates: /mnt/work/pcgr-0.3.4/data/.vep
-#    dest: /mnt/work/pcgr-0.3.4
-#- name: Pull PCGR docker image
-#  become: true
-#  docker_image:
-#    name: sigven/pcgr:0.3.4
