@@ -9,6 +9,7 @@ Quickstart
 YMMV, since this assumes that the volume was prepopulated with data on `/mnt/work`:
 
 ```
+pip install shade ansible>=2.3
 ansible-playbook -i inventory launch_aws.yaml
 ssh ubuntu@ec2-54-66-250-119.ap-southeast-2.compute.amazonaws.com
 cd /mnt/work/pcgr-0.3.4 && ./run.sh
