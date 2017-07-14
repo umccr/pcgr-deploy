@@ -3,7 +3,7 @@
 #
 instance_type: m4.4xlarge
 spot_price: null
-volume: vol-024fba81d276d7e32
+#volume: vol-024fba81d276d7e32 # We will create and check if it is there instead of doing a separate step
 keypair: mba_wwcrc
 image_id: ami-44b5bb27
 security_group: default
@@ -23,3 +23,8 @@ os_auth_url: http://tenjin.nci.org.au:5000/v2.0
 
 os_username: <USER>
 os_password: <PASS>
+
+# PCGR
+#
+pcgr_release: 0.3.4
+pcgr_databundle: pcgr.databundle.GRCh37.20170420.tgz

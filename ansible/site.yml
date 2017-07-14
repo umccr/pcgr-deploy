@@ -8,5 +8,6 @@
        ignore_errors: true
      - action: setup
    roles:
-    - pcgr_hpc
-    #- pcgr_aws
+    #- openstack
+    #- hpc
+    - aws

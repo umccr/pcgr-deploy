@@ -1,32 +1,34 @@
 Personal Cancer Genome Reporter deployment recipes
 ==================================================
 
-WARNING: Half baked ansible/kubernetes recipes, use at your own cost/risk.
+Introduction
+============
+
+Cancer reporting systems require prepopulating several gigabytes of genomic reference data and provisioning all software pieces, docker containers and configuration.
+
+PCGR eases that, `pcgr-deploy` simplifies it futher.
+
+This ansible playbook contains tasks to deploy [PCGR](https://github.com/sigven/pcgr) into Amazon and OpenStack clouds, with HPC-specific tasks added as a module (mainly NFS mounting).
 
 Quickstart
 ==========
 
-YMMV, since this assumes that the volume was prepopulated with data on `/mnt/work`:
+The following lines will install the deployment modules, deploy PCGR and run its built-in example as a validation:
 
 ```
-pip install shade ansible>=2.3
+pip install boto shade ansible>=2.3
 ansible-playbook -i inventory launch_aws.yaml
-ssh ubuntu@ec2-54-66-250-119.ap-southeast-2.compute.amazonaws.com
-cd /mnt/work/pcgr-0.3.4 && ./run.sh
+ssh ubuntu@<AWS INSTANCE>
+cd /mnt/work/pcgr-0.3.4
+./pcgr.py --input_vcf examples/tumor_sample.COAD.vcf.gz --input_cna_segments examples/tumor_sample.COAD.cna.tsv /mnt/work/pcgr-0.3.4 output tumor_sample.COAD
 ```
 
-Also the `run.sh` script does not exist on PCGR, see [an example](https://github.com/sigven/pcgr#step-4-run-example) and adjust it to your inputs. Or create your own `run.sh`, i.e:
+Amazon or OpenStack or HPC?
+===========================
 
-```
-#!/bin/sh
-time ./pcgr.py --input_vcf cov50-ensemble-annotated-decomposed.vcf.gz --input_cna_segments examples/tumor_sample.COAD.cna.tsv /mnt/work/pcgr-0.3.4 output UMCCR
-```
+This playbook allows for all of them, it has tested on the [Australian NCI supercomputing centre Tenjin private cloud](https://nci.org.au/systems-services/cloud-computing/tenjin/).
 
-Deploying PCGR
-==============
-
-The following steps assume that you have a previously configured [aws-cli](https://github.com/aws/aws-cli) and have a recent version
-of ansible installed (2.3.x). If this is the case, ansible will create 
+The following steps assume that you have a previously configured [aws-cli](https://github.com/aws/aws-cli) and have a recent version of ansible installed (2.3.x). If this is the case, ansible will create 
 
 1. Tweak `ansible/project_vars.yaml` according to your current AWS zones and preferences.
 2. `cd ansible && ./create_volume.sh`.
@@ -34,12 +36,10 @@ of ansible installed (2.3.x). If this is the case, ansible will create
 4. Run `ansible-playbook -i inventory launch_aws.yaml` to deploy and install the EC2 instance linked with the previously created volume.
 5. SSH into the newly created instance.
 
-If all went well, you should be able to run pcgr [as specified in PCGR README](https://github.com/sigven/pcgr#step-4-run-example).
-
 TODO: Have idempotency with volume creation for better automation (get rid of the `./create_volume.sh` and steps 2,3,4).
 
-Saving money with Spot instances
---------------------------------
+Amazon: Saving money with Spot instances
+-----------------------------------------
 
 The following script included in `ansible` queries AWS's spot history and determines if the
 instance we are asking for will be available. For instance, running the script with a `0.08AUD`

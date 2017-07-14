@@ -1,0 +1,4 @@
+---
+- name: Launch AWS instance and populate it with PCGR
+  include: ../launch_aws.yml
+  include: ../../common/main.yml
