@@ -1,5 +1,3 @@
 ---
-- name: Launch AWS instance
-  include: launch_aws.yml
-
-#- name: Populate it with PCGR
+- name: Populate AWS instance from terraform
+  include: ../common/main.yml

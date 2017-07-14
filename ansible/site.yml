@@ -1,7 +1,6 @@
 ---
  - name: "Install PCGR"
    hosts: all
-   connection: local
    user: ubuntu 
    become: yes
    pre_tasks:
