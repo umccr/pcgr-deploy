@@ -1,6 +1,4 @@
 ---
-- include_vars: project_vars.yaml
-
 - name: Download and unpack PCGR release
   unarchive:
     src: https://github.com/sigven/pcgr/archive/v{{ pcgr_release }}.tar.gz

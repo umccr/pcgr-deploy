@@ -3,7 +3,6 @@
   connection: local
   gather_facts: false
   tasks:
-    - include_vars: project_vars.yaml
     - name: Deploy an instance
       os_server:
         state: present
