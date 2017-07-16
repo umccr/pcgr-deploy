@@ -3,10 +3,10 @@
    hosts: all
    user: ubuntu 
    become: yes
-   gather_facts: no
-   pre_tasks:
-    - name: Seed ansible on remote instances (no python errors)
-      raw: sudo apt-get -y install python-simplejson aptitude
+   #gather_facts: yes
+   #pre_tasks:
+    #- name: Seed ansible on remote instances (no python errors)
+    #  raw: sudo apt-get -y install python-simplejson aptitude
     #- name: Wait for the terraform-enacted instance to be available via SSH
     #  wait_for:
     #    host: "{{ ansible_host }}"
@@ -15,7 +15,7 @@
     #    timeout: 320
     #    state: started
     #  ignore_errors: true
-    - action: setup
+    #- action: setup
 
    roles:
-     - role: common
+      - common
