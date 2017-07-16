@@ -1,8 +1,7 @@
 ---
- - name: "Takeover provisioning from terraform"
-   hosts: all
-   user: ubuntu 
-   become: yes
+- hosts: all
+  user: ubuntu 
+  become: yes
    #gather_facts: yes
    #pre_tasks:
     #- name: Seed ansible on remote instances (no python errors)
@@ -16,6 +15,5 @@
     #    state: started
     #  ignore_errors: true
     #- action: setup
-
-   roles:
-      - common
+  roles:
+    - common
