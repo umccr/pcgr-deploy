@@ -1,11 +1,15 @@
 ---
+- name: Debug mount device
+  debug:
+    msg: "{{ ansible_mounts[0].device }}"
+
 - name: Create ext4 filesystem if not present
-  filesystem: fstype=ext4 dev={{ ansible_mounts[1].device }}
+  filesystem: fstype=ext4 dev={{ ansible_mounts[0].device }}
   become: true
 
 - name: Mount local work volume
   become: true
-  mount: name=/mnt/work src={{ ansible_mounts[1].device }} fstype=ext4 state=mounted
+  mount: name=/mnt/work src={{ ansible_mounts[0].device }} fstype=ext4 state=mounted
 
 - name: Give ubuntu rights to write on /mnt/work
   become: true

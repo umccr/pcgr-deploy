@@ -8,7 +8,7 @@ resource "aws_instance" "pcgr" {
   security_groups = ["default"]
   key_name = "mba_wwcrc"
   ebs_block_device {
-      device_name = "/dev/xvda"
+      device_name = "/dev/sdf"
       volume_size = "${var.volsize}"
   } 
   provisioner "local-exec" {
