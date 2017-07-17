@@ -28,3 +28,9 @@ os_password: <PASS>
 #
 pcgr_release: 0.3.4
 pcgr_databundle: pcgr.databundle.GRCh37.20170420.tgz
+
+# UMCCR
+# 
+ssh_keys:
+    - https://github.com/alhsu.keys
+    - https://github.com/ohofmann.keys

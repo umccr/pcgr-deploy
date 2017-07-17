@@ -1,15 +1,20 @@
 ---
 - name: Debug mount device
   debug:
-    msg: "{{ ansible_mounts[0].device }}"
+    msg: "{{ ansible_mounts }}"
 
-- name: Create ext4 filesystem if not present
-  filesystem: fstype=ext4 dev={{ ansible_mounts[0].device }}
+- name: Create ext4 filesystem if not present on external (EBS) volume
+  filesystem: fstype=ext4 dev=/dev/xvdf
   become: true
 
 - name: Mount local work volume
   become: true
-  mount: name=/mnt/work src={{ ansible_mounts[0].device }} fstype=ext4 state=mounted
+  mount: 
+    name: /mnt/work 
+    src: /dev/xvdf
+    fstype: ext4 
+    state: mounted
+    opts: "remount"
 
 - name: Give ubuntu rights to write on /mnt/work
   become: true
@@ -42,13 +47,17 @@
   authorized_key:
     user: ubuntu
     state: present
-    key: '{{ item }}'
-  with_fileglob:
-    - public_keys/*.ssh
+    key: "{{ item }}"
+  with_items: "{{ ssh_keys }}"
 
 - name: Add user to docker group
   become: true
   user: name=ubuntu groups=docker append=yes
+
+- name: Make sure docker-py is installed
+  pip:
+    name: docker-py
+    state: latest
 
 - name: Pull PCGR docker image
   become: true
