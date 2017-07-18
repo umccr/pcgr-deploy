@@ -4,14 +4,14 @@
     msg: "{{ ansible_mounts }}"
 
 - name: Create ext4 filesystem if not present on external (EBS) volume
-  filesystem: fstype=ext4 dev=/dev/xvdf
+  filesystem: fstype=ext4 dev=/dev/xvdb
   become: true
 
 - name: Mount local work volume
   become: true
   mount: 
     name: /mnt/work 
-    src: /dev/xvdf
+    src: /dev/xvdb
     fstype: ext4 
     state: mounted
     opts: "remount"
