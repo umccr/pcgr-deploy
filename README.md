@@ -16,11 +16,11 @@ Quickstart
 The following lines will install the deployment modules, deploy PCGR and run its built-in example as a validation:
 
 ```
-pip install boto shade ansible>=2.3
+conda install -c conda-forge ansible>=2.3
 ansible-playbook -i inventory launch_aws.yaml
 ssh ubuntu@<AWS INSTANCE>
-cd /mnt/work/pcgr-0.3.4
-./pcgr.py --input_vcf examples/tumor_sample.COAD.vcf.gz --input_cna_segments examples/tumor_sample.COAD.cna.tsv /mnt/work/pcgr-0.3.4 output tumor_sample.COAD
+cd /mnt/work/pcgr-*
+./pcgr.py --input_vcf examples/tumor_sample.COAD.vcf.gz --input_cna_segments examples/tumor_sample.COAD.cna.tsv /mnt/work/pcgr-* output tumor_sample.COAD
 ```
 
 Amazon or OpenStack or HPC?
@@ -30,16 +30,12 @@ This playbook allows for all of them, it has tested on the [Australian NCI super
 
 The following steps assume that you have a previously configured [aws-cli](https://github.com/aws/aws-cli) and have a recent version of ansible installed (2.3.x). If this is the case, ansible will create 
 
-1. Tweak `ansible/project_vars.yaml` according to your current AWS zones and preferences.
-2. `cd ansible && ./create_volume.sh`.
-3. Take note of the `volume-id` generated on step 3 and edit `project_vars.yaml` accordingly.
-4. Run `ansible-playbook -i inventory launch_aws.yaml` to deploy and install the EC2 instance linked with the previously created volume.
-5. SSH into the newly created instance.
+1. Tweak `ansible/group_vars/vars` according to your current AWS zones and preferences.
+2. Run `ansible-playbook -i inventory site.yaml` to deploy and install the EC2 instance linked with the previously created volume.
+3. SSH into the newly created instance.
 
-TODO: Have idempotency with volume creation for better automation (get rid of the `./create_volume.sh` and steps 2,3,4).
-
-Amazon: Saving money with Spot instances
------------------------------------------
+(Optional) Amazon: Saving money with Spot instances
+---------------------------------------------------
 
 The following script included in `ansible` queries AWS's spot history and determines if the
 instance we are asking for will be available. For instance, running the script with a `0.08AUD`
