@@ -63,3 +63,8 @@ Kubernetes
 ==========
 
 Open ended experiment for now, there are some errors that [need some attention](https://twitter.com/braincode/status/865250048480817152).
+
+FAQ
+===
+
+`ERROR: package is not a legal parameter in an Ansible task or handler` is a symptom of a too old ansible version, you need 2.x to deploy this.
