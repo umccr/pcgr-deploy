@@ -26,7 +26,7 @@ os_password: <PASS>
 
 # PCGR
 #
-pcgr_release: 0.3.4
+pcgr_release: 0.4.0
 pcgr_databundle: pcgr.databundle.GRCh37.20170420.tgz
 
 # UMCCR

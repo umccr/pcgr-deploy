@@ -62,7 +62,7 @@
 - name: Pull PCGR docker image
   become: true
   docker_image:
-    name: sigven/pcgr:0.3.4
+    name: sigven/pcgr:"{{ pcgr_release }}"
 
 - name: Refresh group info
   become: false
