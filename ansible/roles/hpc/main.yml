@@ -1,0 +1,25 @@
+- name: Add HPC LDAP group to instance
+  group:
+    gid: 6034
+    name: gx8
+
+- name: Add HPC LDAP user to instance
+  become: true
+  user:
+    uid: 11937
+    name: gx8_nfs
+
+- name: Mount HPC volume
+  mount:
+    path: /mnt/raijin
+    src: gdata3-nfs.nci.org.au:/mnt/gdata3/gx8
+    fstype: nfs
+    opts: hard,fg,defaults,nosuid,exec,ro,noatime,intr,rsize=32768,wsize=32768
+    state: mounted
+
+- name: Restore PCGR datapack from HPC filesystem
+  unarchive:
+    src: /mnt/raijin/PCGR/{{ pcgr_databundle }}
+    dest: /mnt/work/pcgr-{{ pcgr_release }}
+    creates: /mnt/work/pcgr-{{ pcgr_release }}/data/.vep
+    remote_src: yes

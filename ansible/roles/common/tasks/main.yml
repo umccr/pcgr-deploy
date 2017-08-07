@@ -1,0 +1,75 @@
+---
+- name: Debug mount device
+  debug:
+    msg: "{{ ansible_mounts }}"
+
+- name: Create ext4 filesystem if not present on external (EBS) volume
+  filesystem: fstype=ext4 dev=/dev/xvdb
+  become: true
+
+- name: Mount local work volume
+  become: true
+  mount: 
+    name: /mnt/work 
+    src: /dev/xvdb
+    fstype: ext4 
+    state: mounted
+    opts: "remount"
+
+- name: Give ubuntu rights to write on /mnt/work
+  become: true
+  file:
+    path: /mnt/work
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: 0755
+
+- name: Update system and install basics
+  become: true
+  package: 
+    name: "{{ item }}"
+    state: installed
+    update_cache: yes
+  with_items:
+      - git
+      - unzip
+      - wget
+      - tar
+      - gzip
+      - bzip2
+      - docker.io
+      - python-docker
+      - tabix
+      - nfs-common
+
+- name: Add SSH keys for UMCCR team
+  authorized_key:
+    user: ubuntu
+    state: present
+    key: "{{ item }}"
+  with_items: "{{ ssh_keys }}"
+
+- name: Add user to docker group
+  become: true
+  user: name=ubuntu groups=docker append=yes
+
+- name: Make sure docker-py is installed
+  pip:
+    name: docker-py
+    state: latest
+
+- name: Pull PCGR docker image
+  become: true
+  docker_image:
+    name: sigven/pcgr:"{{ pcgr_release }}"
+
+- name: Refresh group info
+  become: false
+  command: newgrp docker
+
+- name: Setup local firewall
+  ufw:
+    state: enabled
+    rule: allow
+    name: OpenSSH

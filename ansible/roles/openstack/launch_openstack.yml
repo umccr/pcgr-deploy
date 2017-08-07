@@ -1,0 +1,22 @@
+# http://superuser.openstack.org/articles/using-ansible-2-0-to-launch-a-server-on-openstack/
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Deploy an instance
+      os_server:
+        state: present
+        auth:
+          auth_url: "{{ os_auth_url }}"
+          username: "{{ os_username }}"
+          password: "{{ os_password }}"
+          project_name: "{{ os_project }}"
+        name: "{{ os_hostname }}"
+        image: "{{ os_image }}"
+        key_name: "{{ os_keypair }}"
+        wait: yes
+        flavor: "{{ os_flavor }}"
+        auto_ip: yes
+        network: "{{ os_network }}"
+        meta:
+          hostname: "{{ os_hostname }}"
