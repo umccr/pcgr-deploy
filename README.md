@@ -9,37 +9,26 @@ Quickstart
 YMMV, since this assumes that the volume was prepopulated with data on `/mnt/work`:
 
 ```
-pip install shade ansible>=2.3
+conda install -c conda-forge ansible>=2.3
 ansible-playbook -i inventory launch_aws.yaml
-ssh ubuntu@ec2-54-66-250-119.ap-southeast-2.compute.amazonaws.com
-cd /mnt/work/pcgr-0.3.4 && ./run.sh
-```
-
-Also the `run.sh` script does not exist on PCGR, see [an example](https://github.com/sigven/pcgr#step-4-run-example) and adjust it to your inputs. Or create your own `run.sh`, i.e:
-
-```
-#!/bin/sh
-time ./pcgr.py --input_vcf cov50-ensemble-annotated-decomposed.vcf.gz --input_cna_segments examples/tumor_sample.COAD.cna.tsv /mnt/work/pcgr-0.3.4 output UMCCR
+ssh ubuntu@<your_instance>
+cd /mnt/work/pcgr-* && time ./pcgr.py --input_vcf cov50-ensemble-annotated-decomposed.vcf.gz --input_cna_segments examples/tumor_sample.COAD.cna.tsv /mnt/work/pcgr-* output UMCCR
 ```
 
 Deploying PCGR
 ==============
 
 The following steps assume that you have a previously configured [aws-cli](https://github.com/aws/aws-cli) and have a recent version
-of ansible installed (2.3.x). If this is the case, ansible will create 
+of ansible installed (2.3.x):
 
-1. Tweak `ansible/project_vars.yaml` according to your current AWS zones and preferences.
-2. `cd ansible && ./create_volume.sh`.
-3. Take note of the `volume-id` generated on step 3 and edit `project_vars.yaml` accordingly.
-4. Run `ansible-playbook -i inventory launch_aws.yaml` to deploy and install the EC2 instance linked with the previously created volume.
-5. SSH into the newly created instance.
+1. Tweak `ansible/group_vars/vars` according to your current AWS zones and preferences.
+2. Run `ansible-playbook -i inventory launch_aws.yaml`.
+3. SSH into the newly created instance.
 
 If all went well, you should be able to run pcgr [as specified in PCGR README](https://github.com/sigven/pcgr#step-4-run-example).
 
-TODO: Have idempotency with volume creation for better automation (get rid of the `./create_volume.sh` and steps 2,3,4).
-
-Saving money with Spot instances
---------------------------------
+(Optional) saving money with Spot instances
+-------------------------------------------
 
 The following script included in `ansible` queries AWS's spot history and determines if the
 instance we are asking for will be available. For instance, running the script with a `0.08AUD`
