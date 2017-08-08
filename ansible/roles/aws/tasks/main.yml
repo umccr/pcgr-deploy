@@ -1,3 +1,13 @@
 ---
-- name: Populate AWS instance with PCGR stuff
-  include: ../common/main.yml
+- name: Create ext4 filesystem if not present on external (EBS) volume
+  filesystem: fstype=ext4 dev="{{ ansible_mounts[1].device }}"
+  become: true
+
+- name: Mount local work volume
+  become: true
+  mount: 
+    name: /mnt/work 
+    src: "{{ ansible_mounts[1].device }}"
+    fstype: ext4 
+    state: mounted
+    opts: "remount"

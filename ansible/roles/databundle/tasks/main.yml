@@ -1,0 +1,19 @@
+---
+- name: Download Google drive downloader
+  copy:
+    src: scripts/gdown.pl
+    dest: "{{ pcgr_mount }}/gdown.pl"
+    mode: 0644
+
+- name: Download PCGRs data pack
+  command: "perl gdown.pl {{ pcgr_databundle_url}} {{ pcgr_mount }}/{{ pcgr_databundle }}"
+  args:
+    chdir: "{{ pcgr_mount }}"
+    creates: "{{ pcgr_mount }}/{{ pcgr_databundle }}"
+
+- name: Unpack PCGR data pack
+  unarchive:
+    remote_src: yes
+    src: "{{ pcgr_mount }}/{{ pcgr_databundle }}"
+    dest: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
+    creates: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}/data/.vep"

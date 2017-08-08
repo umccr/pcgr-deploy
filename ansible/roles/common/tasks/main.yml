@@ -3,23 +3,10 @@
   debug:
     msg: "{{ ansible_mounts }}"
 
-- name: Create ext4 filesystem if not present on external (EBS) volume
-  filesystem: fstype=ext4 dev=/dev/xvdb
-  become: true
-
-- name: Mount local work volume
-  become: true
-  mount: 
-    name: /mnt/work 
-    src: /dev/xvdb
-    fstype: ext4 
-    state: mounted
-    opts: "remount"
-
-- name: Give ubuntu rights to write on /mnt/work
+- name: Give ubuntu rights to write on "{{ pcgr_mount }}"
   become: true
   file:
-    path: /mnt/work
+    path: "{{ pcgr_mount }}"
     state: directory
     owner: ubuntu
     group: ubuntu
@@ -42,27 +29,35 @@
       - python-docker
       - tabix
       - nfs-common
-
-- name: Add SSH keys for UMCCR team
-  authorized_key:
-    user: ubuntu
-    state: present
-    key: "{{ item }}"
-  with_items: "{{ ssh_keys }}"
-
-- name: Add user to docker group
-  become: true
-  user: name=ubuntu groups=docker append=yes
+      - python-pip
 
 - name: Make sure docker-py is installed
   pip:
     name: docker-py
     state: latest
 
+- name: Add SSH keys for UMCCR team
+  authorized_key:
+    user: ubuntu
+    state: present
+    key: "{{ lookup('file', item) }}"
+  with_fileglob: "files/public_keys/*.pub"
+
+- name: Add user to docker group
+  become: true
+  user: name=ubuntu groups=docker append=yes
+
 - name: Pull PCGR docker image
   become: true
   docker_image:
-    name: sigven/pcgr:"{{ pcgr_release }}"
+    name: sigven/pcgr:{{ pcgr_release }}
+
+- name: Download and unpack PCGR release
+  unarchive:
+    src: https://github.com/sigven/pcgr/archive/v{{ pcgr_release }}.tar.gz
+    creates: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
+    dest: "{{ pcgr_mount }}"
+    remote_src: True
 
 - name: Refresh group info
   become: false

@@ -11,7 +11,7 @@
 
 - name: Mount HPC volume
   mount:
-    path: /mnt/raijin
+    path: "{{ pcgr_hpc_mount }}"
     src: gdata3-nfs.nci.org.au:/mnt/gdata3/gx8
     fstype: nfs
     opts: hard,fg,defaults,nosuid,exec,ro,noatime,intr,rsize=32768,wsize=32768
@@ -19,7 +19,7 @@
 
 - name: Restore PCGR datapack from HPC filesystem
   unarchive:
-    src: /mnt/raijin/PCGR/{{ pcgr_databundle }}
-    dest: /mnt/work/pcgr-{{ pcgr_release }}
-    creates: /mnt/work/pcgr-{{ pcgr_release }}/data/.vep
+    src: "{{ pcgr_hpc_mount }}/PCGR/{{ pcgr_databundle }}"
+    dest: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
+    creates: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}/data/.vep"
     remote_src: yes
