@@ -13,6 +13,8 @@ This ansible playbook contains tasks to deploy [PCGR](https://github.com/sigven/
 Quickstart
 ==========
 
+Tweak files `ansible/group_vars/all` and `ansible.site.yml`'s roles section according to your needs (are you a HPC or AWS user?).
+
 The following lines will install the deployment modules, deploy PCGR and run its built-in example as a validation:
 
 ```
@@ -67,4 +69,4 @@ Open ended experiment for now, there are some errors that [need some attention](
 FAQ
 ===
 
-`ERROR: package is not a legal parameter in an Ansible task or handler` is a symptom of a too old ansible version, you need 2.x to deploy this.
+`ERROR: package is not a legal parameter in an Ansible task or handler` is a symptom of a too old ansible version (probably 1.9.x). You need 2.x to deploy this.

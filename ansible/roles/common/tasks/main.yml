@@ -3,15 +3,6 @@
   debug:
     msg: "{{ ansible_mounts }}"
 
-- name: Give ubuntu rights to write on "{{ pcgr_mount }}"
-  become: true
-  file:
-    path: "{{ pcgr_mount }}"
-    state: directory
-    owner: ubuntu
-    group: ubuntu
-    mode: 0755
-
 - name: Update system and install basics
   become: true
   package: 
@@ -58,6 +49,24 @@
     creates: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
     dest: "{{ pcgr_mount }}"
     remote_src: True
+
+- name: Give ubuntu rights to write on "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
+  become: true
+  file:
+    path: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: 0755
+
+- name: Creating default PCGR output directory on "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}/output"
+  become: true
+  file:
+    path: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}/output"
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: 0755
 
 - name: Refresh group info
   become: false
