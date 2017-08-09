@@ -1,5 +1,5 @@
 ---
-- name: Debug mount device
+- name: Debug mount devices
   debug:
     msg: "{{ ansible_mounts }}"
 
