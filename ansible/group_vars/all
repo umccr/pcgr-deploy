@@ -27,13 +27,13 @@ os_password: <PASS>
 # PCGR
 #
 pcgr_mount: /mnt/work
-pcgr_release: 0.3.4
-pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk&export=download
-pcgr_databundle: pcgr.databundle.GRCh37.20170420.tgz
+#pcgr_release: 0.3.4
+#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk&export=download
+#pcgr_databundle: pcgr.databundle.GRCh37.20170420.tgz
 #
-#pcgr_release: 0.4.1
-#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mNnpLOFNXdFV3bVE&export=download
-#pcgr_databundle: pcgr.databundle.GRCh37.20170803.tgz
+pcgr_release: 0.4.1
+pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mNnpLOFNXdFV3bVE&export=download
+pcgr_databundle: pcgr.databundle.GRCh37.20170803.tgz
 
 # HPC specific
 #
