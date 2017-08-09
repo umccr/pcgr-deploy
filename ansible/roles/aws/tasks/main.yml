@@ -1,13 +1,34 @@
 ---
-- name: Create ext4 filesystem if not present on external (EBS) volume
-  filesystem: fstype=ext4 dev="{{ ansible_mounts[1].device }}"
-  become: true
+- name: Launch EC2 instance
+  ec2:
+      group: "{{ security_group }}"
+      instance_type: "{{ instance_type }}"
+      spot_price: "{{ spot_price }}"
+      image: "{{ image_id }}"
+      keypair: "{{ keypair }}"
+      region: "{{ region }}"
+      zone: "{{ zone }}"
+      wait: yes
+      volumes:
+        - device_name: /dev/xvdb
+          volume_type: gp2
+          volume_size: "{{ volume_size }}"
+      count_tag:
+        name: pcgr
+      exact_count: 1
+  register: ec2
 
-- name: Mount local work volume
-  become: true
-  mount: 
-    name: /mnt/work 
-    src: "{{ ansible_mounts[1].device }}"
-    fstype: ext4 
-    state: mounted
-    opts: "remount"
+- name: Add new instance to host group
+  add_host:
+    hostname: "{{ item.public_ip }}"
+    groupname: launched
+  with_items: "{{ ec2.instances }}"
+
+- name: Wait for SSH to come up
+  wait_for:
+    host: "{{ item.public_dns_name }}"
+    port: 22
+    delay: 60
+    timeout: 320
+    state: started
+  with_items: "{{ ec2.instances }}"

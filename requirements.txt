@@ -1,4 +1,4 @@
-boto
+boto3
 ansible
 awscli
 shade

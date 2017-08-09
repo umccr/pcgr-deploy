@@ -3,12 +3,12 @@
 #
 instance_type: m4.4xlarge
 spot_price: null
-#volume: vol-024fba81d276d7e32 # We will create and check if it is there instead of doing a separate step
 keypair: mba_wwcrc
 image_id: ami-44b5bb27
 security_group: default
 region: ap-southeast-2
 zone: ap-southeast-2a
+volume_size: 150
 
 # OpenStack
 #
@@ -27,13 +27,13 @@ os_password: <PASS>
 # PCGR
 #
 pcgr_mount: /mnt/work
-#pcgr_release: 0.3.4
-#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk&export=download
-#pcgr_databundle: pcgr.databundle.GRCh37.20170420.tgz
-pcgr_release: 0.4.1
-#pcgr_databundle_url: https://drive.google.com/file/d/0B8aYD2TJ472mNnpLOFNXdFV3bVE&export=download
-pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mNnpLOFNXdFV3bVE
-pcgr_databundle: pcgr.databundle.GRCh37.20170803.tgz
+pcgr_release: 0.3.4
+pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk&export=download
+pcgr_databundle: pcgr.databundle.GRCh37.20170420.tgz
+#
+#pcgr_release: 0.4.1
+#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mNnpLOFNXdFV3bVE&export=download
+#pcgr_databundle: pcgr.databundle.GRCh37.20170803.tgz
 
 # HPC specific
 #

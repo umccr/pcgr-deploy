@@ -3,6 +3,19 @@
   debug:
     msg: "{{ ansible_mounts }}"
 
+- name: Create ext4 filesystem if not present on external (EBS) volume
+  filesystem:
+    fstype=ext4
+    dev="{{ ansible_mounts[1].device }}"
+
+- name: Mount local work volume
+  mount: 
+    name: /mnt/work 
+    src: "{{ ansible_mounts[1].device }}"
+    fstype: ext4 
+    state: mounted
+    opts: remount
+
 - name: Update system and install basics
   become: true
   package: 
