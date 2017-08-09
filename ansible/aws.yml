@@ -2,8 +2,52 @@
 - hosts: localhost
   connection: local
   gather_facts: no
-  
+  pre_tasks:
+    - name: Seed ansible on remote instances (no python2 not found errors)
+      raw: sudo apt-get -y install python-simplejson aptitude
+  tasks:
+    - name: Launch EC2 instance
+      ec2:
+         group: "{{ security_group }}"
+         instance_type: "{{ instance_type }}"
+         spot_price: "{{ spot_price }}"
+         image: "{{ image_id }}"
+         keypair: "{{ keypair }}"
+         region: "{{ region }}"
+         zone: "{{ zone }}"
+         wait: yes
+         volumes:
+           - device_name: /dev/xvdb
+             volume_type: gp2
+             volume_size: "{{ volume_size }}"
+         count_tag:
+           name: pcgr
+         exact_count: 1
+      register: ec2
+
+    - name: Add new instance to host group
+      add_host:
+        hostname: "{{ item.public_ip }}"
+        groupname: launched
+      with_items: "{{ ec2.instances }}"
+
+    - name: Wait for SSH to come up
+      wait_for:
+        host: "{{ item.public_dns_name }}"
+        port: 22
+        delay: 60
+        timeout: 320
+        state: started
+      with_items: "{{ ec2.instances }}"
+
+    - name: Get rid of SSH "Are you sure you want to continue connecting (yes/no)?" query
+      shell: ssh-keyscan {{ item.public_ip }} >> $HOME/.ssh/known_hosts
+      with_items: ec2.instances
+
+- name: Configure instance(s)
+  hosts: launched
+  become: True
+  gather_facts: True
   roles:
-    - aws
     - common
     - databundle

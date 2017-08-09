@@ -17,7 +17,6 @@
    - action: setup
   
   roles:
-    - aws
     - common
     - databundle
 #    - hpc
