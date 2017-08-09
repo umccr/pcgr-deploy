@@ -68,6 +68,7 @@
   file:
     path: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
     state: directory
+    recurse: yes
     owner: ubuntu
     group: ubuntu
     mode: 0755
