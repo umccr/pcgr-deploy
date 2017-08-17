@@ -8,6 +8,7 @@ image_id: ami-44b5bb27
 security_group: default
 region: ap-southeast-2
 zone: ap-southeast-2a
+volume_device: /dev/xvdb
 volume_size: 80
 
 # OpenStack

@@ -2,9 +2,6 @@
 - hosts: localhost
   connection: local
   gather_facts: no
-  pre_tasks:
-    - name: Seed ansible on remote instances (no python2 not found errors)
-      raw: sudo apt-get -y install python-simplejson aptitude
   tasks:
     - name: Launch EC2 instance
       ec2:
@@ -27,7 +24,7 @@
 
     - name: Add new instance to host group
       add_host:
-        hostname: "{{ item.public_ip }}"
+        hostname: "{{ item.public_dns_name }}"
         groupname: launched
       with_items: "{{ ec2.instances }}"
 
@@ -41,10 +38,10 @@
       with_items: "{{ ec2.instances }}"
 
     - name: Get rid of SSH "Are you sure you want to continue connecting (yes/no)?" query
-      shell: ssh-keyscan {{ item.public_ip }} >> $HOME/.ssh/known_hosts
-      with_items: ec2.instances
+      shell: ssh-keyscan "{{ item.public_dns_name }}" >> $HOME/.ssh/known_hosts
+      with_items: "{{ ec2.instances }}"
 
-- name: Configure instance(s)
+- name: Deploy PCGR on AWS
   hosts: launched
   become: True
   gather_facts: True

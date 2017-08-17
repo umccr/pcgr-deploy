@@ -19,7 +19,7 @@ The following lines will install the deployment modules, deploy PCGR and run its
 
 ```
 conda install -c conda-forge ansible>=2.3
-ansible-playbook -i inventory launch_aws.yaml
+ansible-playbook aws.yaml
 ssh ubuntu@<AWS INSTANCE>
 cd /mnt/work/pcgr-*
 ./pcgr.py --input_vcf examples/tumor_sample.COAD.vcf.gz --input_cna_segments examples/tumor_sample.COAD.cna.tsv /mnt/work/pcgr-* output tumor_sample.COAD
@@ -30,11 +30,11 @@ Amazon or OpenStack or HPC?
 
 This playbook allows for all of them, it has tested on the [Australian NCI supercomputing centre Tenjin private cloud](https://nci.org.au/systems-services/cloud-computing/tenjin/).
 
-The following steps assume that you have a previously configured [aws-cli](https://github.com/aws/aws-cli) and have a recent version of ansible installed (2.3.x). If this is the case, ansible will create 
+The only changes needed are on `ansible/group_vars/all` as mentioned on the Quickstart and rearranging `site.yml` so that it includes the `hpc` role after `common` and `databundle`.Then running the playbook in the following way should deploy PCGR in your (OpenStack?) VM:
 
-1. Tweak `ansible/group_vars/vars` according to your current AWS zones and preferences.
-2. Run `ansible-playbook -i inventory site.yaml` to deploy and install the EC2 instance linked with the previously created volume.
-3. SSH into the newly created instance.
+```
+ansible-playbook site.yml -e 'ansible_python_interpreter=/usr/bin/python3' -i <YOUR CLUSTER IP/HOSTNAME>,
+```
 
 (Optional) Amazon: Saving money with Spot instances
 ---------------------------------------------------
