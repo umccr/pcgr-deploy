@@ -5,18 +5,19 @@
   tasks:
     - name: Launch EC2 instance
       ec2:
-         group: "{{ security_group }}"
-         instance_type: "{{ instance_type }}"
-         spot_price: "{{ spot_price }}"
-         image: "{{ image_id }}"
-         keypair: "{{ keypair }}"
-         region: "{{ region }}"
-         zone: "{{ zone }}"
+         group: "{{ aws.security_group }}"
+         instance_type: "{{ aws.instance_type }}"
+         spot_price: "{{ aws.spot_price }}"
+         image: "{{ aws.image_id }}"
+         keypair: "{{ aws.keypair }}"
+         region: "{{ aws.region }}"
+         zone: "{{ aws.zone }}"
          wait: yes
          volumes:
-           - device_name: /dev/xvdb
+           - device_name: "{{ aws.volume_device }}"
              volume_type: gp2
-             volume_size: "{{ volume_size }}"
+             volume_size: "{{ aws.volume_size }}"
+             delete_on_termination: true
          count_tag:
            name: pcgr
          exact_count: 1

@@ -1,0 +1,50 @@
+# http://superuser.openstack.org/articles/using-ansible-2-0-to-launch-a-server-on-openstack/
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Deploy an instance
+      os_server:
+        state: present
+        auth:
+          auth_url: "{{ openstack.auth_url }}"
+          username: "{{ openstack.username }}"
+          password: "{{ openstack.password }}"
+          project_name: "{{ openstack.project }}"
+        name: "{{ openstack.hostname }}"
+        image: "{{ openstack.image }}"
+        key_name: "{{ openstack.keypair }}"
+        wait: yes
+        flavor: "{{ openstack.flavor }}"
+        auto_ip: yes
+        network: "{{ openstack.network }}"
+        meta:
+          hostname: "{{ openstack.hostname }}"
+        register: os_instance
+
+   - name: Wait for SSH on the Instance
+     command: >
+       ssh -oBatchMode=yes -oStrictHostKeyChecking=no
+       centos@{{webserver.server.public_v4}} true
+     register: result
+     until: result|success
+     retries: 30
+     delay: 10
+
+    - name: Add new instance to host group
+      add_host:
+        hostname: "{{ item.server.public_v4 }}"
+        groupname: launched
+      with_items: "{{ os_instance }}"
+
+    - name: Get rid of SSH "Are you sure you want to continue connecting (yes/no)?" query
+      shell: ssh-keyscan "{{ item.server.public_v4 }}" >> $HOME/.ssh/known_hosts
+      with_items: "{{ os_instance }}"
+
+- name: Deploy PCGR on OpenStack
+  hosts: launched
+  become: True
+  gather_facts: True
+  roles:
+    - common
+    - hpc

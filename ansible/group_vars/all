@@ -1,29 +1,29 @@
 ---
 #Amazon
-#
-instance_type: m4.4xlarge
-spot_price: null
-keypair: mba_wwcrc
-image_id: ami-44b5bb27
-security_group: default
-region: ap-southeast-2
-zone: ap-southeast-2a
-volume_device: /dev/xvdb
-volume_size: 80
+aws:
+    instance_type: m4.4xlarge
+    spot_price: null
+    keypair: mba_wwcrc
+    image_id: ami-44b5bb27
+    security_group: default
+    region: ap-southeast-2
+    zone: ap-southeast-2a
+    volume_device: /dev/xvdb
+    volume_size: 80
 
 # OpenStack
-#
-#os_flavor: t2.8c16m80d
-os_flavor: t2.1c2m10d
-os_image: 77e728bf-6780-4416-a64b-97ea0e4634f0
-os_hostname: pcgr.local
-os_keypair: mba_wwcrc
-os_network: gx8
-os_project: gx8
-os_auth_url: http://tenjin.nci.org.au:5000/v2.0
-
-os_username: <USER>
-os_password: <PASS>
+openstack:
+    #os_flavor: t2.8c16m80d
+    flavor: t2.1c2m10d
+    image: 77e728bf-6780-4416-a64b-97ea0e4634f0
+    hostname: pcgr.local
+    keypair: mba_wwcrc
+    network: gx8
+    project: gx8
+    auth_url: http://tenjin.nci.org.au:5000/v2.0
+    volume_device: /dev/sdb
+    username: <USER>
+    password: <PASS>
 
 # PCGR
 #
