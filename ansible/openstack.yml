@@ -20,16 +20,6 @@
         network: "{{ openstack.network }}"
         meta:
           hostname: "{{ openstack.hostname }}"
-        register: os_instance
-
-   - name: Wait for SSH on the Instance
-     command: >
-       ssh -oBatchMode=yes -oStrictHostKeyChecking=no
-       centos@{{webserver.server.public_v4}} true
-     register: result
-     until: result|success
-     retries: 30
-     delay: 10
 
     - name: Add new instance to host group
       add_host:

@@ -13,17 +13,37 @@
     group: ubuntu
     mode: 0755
 
-- name: Create ext4 filesystem if not present on external (EBS) volume
+- name: "Check which of {{ aws.volume_device }} or {{ openstack.volume_device }} we have present"
+  stat: path={{ item }}
+  with_items: 
+      - "{{ aws.volume_device }}"
+      - "{{ openstack.volume_device }}"
+  register: volume_device
+
+- name: Debug mount devices
+  debug:
+    msg: "{{ item.stat.exists }}"
+  with_items: "{{ volume_device.results }}"
+
+- name: Create ext4 filesystem if not present on attached volume
   filesystem:
     fstype: ext4
-    dev: "{{ volume_device }}"
+    dev: "{{ item.item }}"
+  with_items: "{{ volume_device.results }}"
+  when:
+      - not item | skipped
+      - item.stat.exists
 
 - name: Mount local work volume
   mount: 
     path: "{{ pcgr_mount }}"
-    src: "{{ volume_device }}"
+    src: "{{ item.item }}"
     fstype: ext4 
     state: mounted
+  with_items: "{{ volume_device.results }}"
+  when:
+      - not item | skipped
+      - item.stat.exists
 
 - name: Update system and install basics
   become: true
@@ -64,7 +84,9 @@
 - name: Pull PCGR docker image
   become: true
   docker_image:
-    name: sigven/pcgr:{{ pcgr_release }}
+    name: sigven/pcgr
+    state: present
+    tag: "{{ pcgr_release }}"
 
 - name: Download and unpack PCGR release
   unarchive:
