@@ -19,7 +19,7 @@
 
 - name: Restore PCGR datapack from HPC filesystem
   unarchive:
-    src: "{{ pcgr_hpc_mount }}/PCGR/{{ pcgr_databundle }}"
+    src: "{{ pcgr_hpc_mount }}/data/PCGR/{{ pcgr_databundle }}"
     dest: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
     creates: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}/data/.vep"
     remote_src: yes
