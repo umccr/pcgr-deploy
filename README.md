@@ -22,7 +22,7 @@ conda install -c conda-forge ansible>=2.3
 ansible-playbook aws.yaml
 ssh ubuntu@<AWS INSTANCE>
 cd /mnt/work/pcgr-*
-./pcgr.py --input_vcf examples/tumor_sample.COAD.vcf.gz --input_cna_segments examples/tumor_sample.COAD.cna.tsv /mnt/work/pcgr-* output tumor_sample.COAD
+./pcgr.py --input_vcf examples/tumor_sample.COAD.vcf.gz --input_cna examples/tumor_sample.COAD.cna.tsv /mnt/work/pcgr-* output tumor_sample.COAD
 ```
 
 Amazon or OpenStack or HPC?

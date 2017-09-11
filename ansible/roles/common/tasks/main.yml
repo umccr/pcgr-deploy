@@ -3,6 +3,10 @@
   debug:
     msg: "{{ ansible_mounts }}"
 
+- name: Setup hostname to avoid unable to resolve errors
+  hostname:
+    name: localhost
+
 - name: Create "{{ pcgr_mount }}" 
   become: true
   file:
@@ -13,11 +17,11 @@
     group: ubuntu
     mode: 0755
 
-- name: "Check which of {{ aws.volume_device }} or {{ openstack.volume_device }} we have present"
+- name: "Check which of {{ aws.volume_device }} or {{ ostack.volume_device }} we have present"
   stat: path={{ item }}
   with_items: 
       - "{{ aws.volume_device }}"
-      - "{{ openstack.volume_device }}"
+      - "{{ ostack.volume_device }}"
   register: volume_device
 
 - name: Debug mount devices

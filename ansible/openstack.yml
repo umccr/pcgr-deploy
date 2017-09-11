@@ -7,19 +7,19 @@
       os_server:
         state: present
         auth:
-          auth_url: "{{ openstack.auth_url }}"
-          username: "{{ openstack.username }}"
-          password: "{{ openstack.password }}"
-          project_name: "{{ openstack.project }}"
-        name: "{{ openstack.hostname }}"
-        image: "{{ openstack.image }}"
-        key_name: "{{ openstack.keypair }}"
+          auth_url: "{{ ostack.auth_url }}"
+          username: "{{ ostack.username }}"
+          password: "{{ ostack.password }}"
+          project_name: "{{ ostack.project }}"
+        name: "{{ ostack.hostname }}"
+        image: "{{ ostack.image }}"
+        key_name: "{{ ostack.keypair }}"
         wait: yes
-        flavor: "{{ openstack.flavor }}"
+        flavor: "{{ ostack.flavor }}"
         auto_ip: yes
-        network: "{{ openstack.network }}"
+        network: "{{ ostack.network }}"
         meta:
-          hostname: "{{ openstack.hostname }}"
+          hostname: "{{ ostack.hostname }}"
 
     - name: Add new instance to host group
       add_host:

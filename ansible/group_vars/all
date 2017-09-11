@@ -12,18 +12,18 @@ aws:
     volume_size: 80
 
 # OpenStack
-openstack:
-    #os_flavor: t2.8c16m80d
-    flavor: t2.1c2m10d
+ostack:
+    #flavor: t2.8c16m80d
+    flavor: t2.4c8m40d
     image: 77e728bf-6780-4416-a64b-97ea0e4634f0
     hostname: pcgr.local
     keypair: mba_wwcrc
     network: gx8
     project: gx8
     auth_url: http://tenjin.nci.org.au:5000/v2.0
-    volume_device: /dev/sdb
-    username: <USER>
-    password: <PASS>
+    volume_device: /dev/vdb
+    username: test 
+    password: test
 
 # PCGR
 #
