@@ -20,21 +20,35 @@
         network: "{{ ostack.network }}"
         meta:
           hostname: "{{ ostack.hostname }}"
+      register: os_instance
+
+    - name: Show info about the ostack instance
+      debug:
+        msg: "{{ os_instance.server.public_v4 }}"
+
+    - name: Wait for SSH 
+      become: false
+      wait_for:
+        host="{{ os_instance.server.public_v4 }}"
+        port=22
+        delay=1
+        timeout=300
 
     - name: Add new instance to host group
       add_host:
-        hostname: "{{ item.server.public_v4 }}"
-        groupname: launched
-      with_items: "{{ os_instance }}"
+        name: "{{ os_instance.server.public_v4 }}"
+        groups: launched
 
     - name: Get rid of SSH "Are you sure you want to continue connecting (yes/no)?" query
-      shell: ssh-keyscan "{{ item.server.public_v4 }}" >> $HOME/.ssh/known_hosts
-      with_items: "{{ os_instance }}"
+      shell: ssh-keyscan "{{ os_instance.server.public_v4 }}" >> $HOME/.ssh/known_hosts
 
 - name: Deploy PCGR on OpenStack
   hosts: launched
+  user: ubuntu
   become: True
+  become_user: root
   gather_facts: True
+
   roles:
     - common
     - hpc

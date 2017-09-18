@@ -49,8 +49,22 @@
       - not item | skipped
       - item.stat.exists
 
+# Does not work since the lock file never gets removed, actually
+#- name: Wait for automatic system updates to finish first
+#  wait_for:
+#    path: /var/lib/dpkg/lock
+#    state: absent
+#    timeout: 600
+
+# https://github.com/ansible/ansible/issues/25414 ... unreliable :/
+- name: Wait for automatic system updates
+  become: true
+  become_user: root
+  shell: while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done;
+
 - name: Update system and install basics
   become: true
+  become_user: root
   package: 
     name: "{{ item }}"
     state: installed
@@ -85,14 +99,14 @@
   become: true
   user: name=ubuntu groups=docker append=yes
 
-- name: Pull PCGR docker image
+- name: Pull PCGR docker image for PCGR "{{ pcgr_release }}"
   become: true
   docker_image:
     name: sigven/pcgr
     state: present
     tag: "{{ pcgr_release }}"
 
-- name: Download and unpack PCGR release
+- name: Download and unpack PCGR software, release "{{ pcgr_release }}"
   unarchive:
     src: https://github.com/sigven/pcgr/archive/v{{ pcgr_release }}.tar.gz
     creates: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"

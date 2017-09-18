@@ -17,13 +17,13 @@ ostack:
     flavor: t2.4c8m40d
     image: 77e728bf-6780-4416-a64b-97ea0e4634f0
     hostname: pcgr.local
-    keypair: mba_wwcrc
+    keypair: raijin
     network: gx8
     project: gx8
     auth_url: http://tenjin.nci.org.au:5000/v2.0
-    volume_device: /dev/vdb
-    username: test 
+    username: test
     password: test
+    volume_device: /dev/vdb
 
 # PCGR
 #

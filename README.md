@@ -36,6 +36,14 @@ The only changes needed are on `ansible/group_vars/all` as mentioned on the Quic
 ansible-playbook site.yml -e 'ansible_python_interpreter=/usr/bin/python3' -i <YOUR CLUSTER IP/HOSTNAME>,
 ```
 
+Alternatively, if you have python3 already installed in your virtual environment, instantiating and deploying to OpenStack is as easy as:
+
+```
+ansible-playbook openstack.yml
+```
+
+Assuming you are employed by the University of Melbourne and running on Tenjin, that's all you need to do ;)
+
 (Optional) Amazon: Saving money with Spot instances
 ---------------------------------------------------
 
