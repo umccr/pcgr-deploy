@@ -1,3 +1,4 @@
 *.retry
 *.tfstate
 *.tfstate.backup
+*.log

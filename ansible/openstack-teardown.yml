@@ -1,0 +1,22 @@
+# http://superuser.openstack.org/articles/using-ansible-2-0-to-launch-a-server-on-openstack/
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Teardown the PCGR openstack instance
+      os_server:
+        state: absent
+        auth:
+          auth_url: "{{ ostack.auth_url }}"
+          username: "{{ ostack.username }}"
+          password: "{{ ostack.password }}"
+          project_name: "{{ ostack.project }}"
+        name: "{{ ostack.hostname }}"
+        image: "{{ ostack.image }}"
+        key_name: "{{ ostack.keypair }}"
+        wait: yes
+        flavor: "{{ ostack.flavor }}"
+        auto_ip: yes
+        network: "{{ ostack.network }}"
+        meta:
+          hostname: "{{ ostack.hostname }}"

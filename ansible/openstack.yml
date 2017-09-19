@@ -24,7 +24,7 @@
 
     - name: Show info about the ostack instance
       debug:
-        msg: "{{ os_instance.server.public_v4 }}"
+        msg: "{{ os_instance }}"
 
     - name: Wait for SSH 
       become: false

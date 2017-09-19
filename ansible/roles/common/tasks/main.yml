@@ -57,10 +57,14 @@
 #    timeout: 600
 
 # https://github.com/ansible/ansible/issues/25414 ... unreliable :/
+#- name: Wait for automatic system updates
+#  become: true
+#  become_user: root
+#  shell: while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done;
+
+# Trying target unattended-upgrades instead? 
 - name: Wait for automatic system updates
-  become: true
-  become_user: root
-  shell: while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done;
+  shell: while pgrep unattended; do sleep 10; done;
 
 - name: Update system and install basics
   become: true
