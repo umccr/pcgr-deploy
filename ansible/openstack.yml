@@ -16,7 +16,7 @@
         key_name: "{{ ostack.keypair }}"
         wait: yes
         flavor: "{{ ostack.flavor }}"
-        auto_ip: yes
+        floating_ip_pools: "{{ ostack.floating_ip_pool }}"
         network: "{{ ostack.network }}"
         meta:
           hostname: "{{ ostack.hostname }}"
@@ -41,6 +41,7 @@
 
     - name: Get rid of SSH "Are you sure you want to continue connecting (yes/no)?" query
       shell: ssh-keyscan "{{ os_instance.server.public_v4 }}" >> $HOME/.ssh/known_hosts
+    
 
 - name: Deploy PCGR on OpenStack
   hosts: launched

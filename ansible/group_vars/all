@@ -1,11 +1,9 @@
 ---
 #Amazon
 aws:
-#    instance_type: m4.4xlarge
     instance_type: m4.xlarge
     spot_price: null
     keypair: mba_wwcrc
-#    image_id: ami-44b5bb27
     image_id: ami-47ad4025
     security_group: default
     region: ap-southeast-2
@@ -15,12 +13,12 @@ aws:
 
 # OpenStack
 ostack:
-    #flavor: t2.8c16m80d
     flavor: t2.4c8m40d
-    image: 77e728bf-6780-4416-a64b-97ea0e4634f0
+    image: c01f07e6-ed7b-43d6-bf8d-ddfa1865d810
     hostname: pcgr.local
     keypair: raijin
     network: gx8
+    floating_ip_pool: external
     project: gx8
     auth_url: http://tenjin.nci.org.au:5000/v2.0
     username: test
