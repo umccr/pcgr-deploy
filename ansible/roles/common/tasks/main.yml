@@ -140,6 +140,12 @@
   become: false
   command: newgrp docker
 
+- name: "Symlink latest version to {{ pcgr_mount }}/pcgr"
+  file:
+      src: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
+      dst: "{{ pcgr_mount }}/pcgr"
+      state: link
+
 - name: Setup local firewall
   ufw:
     state: enabled
