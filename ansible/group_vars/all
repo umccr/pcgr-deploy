@@ -1,10 +1,10 @@
 ---
 #Amazon
 aws:
-    instance_type: m4.xlarge
+    instance_type: m4.large
     spot_price: null
     keypair: mba_wwcrc
-    image_id: ami-47ad4025
+    image_id: ami-43c12e21
     security_group: default
     region: ap-southeast-2
     zone: ap-southeast-2a
