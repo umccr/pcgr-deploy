@@ -35,6 +35,7 @@ def make_call(cmdline, profile):
     cmd_args = ['aws', '--output', 'json'] + (['--profile', profile] if profile else []) + cmdline
     p = Popen(cmd_args, stdout=PIPE)
     res, _ = p.communicate()
+    res = res.decode('utf-8')
     if p.wait() != 0:
         sys.stderr.write("Failed to execute: " + " ".join(cmd_args))
         sys.exit(1)
@@ -124,7 +125,7 @@ unix_now = time.time()
 
 sorted_list = list(result.keys())
 sorted_list.sort(key=lambda x: (result.get(x, 0), x))
-print "Duration\tInstance Type\tAvailability Zone"
+print("Duration\tInstance Type\tAvailability Zone")
 for it in sorted_list:
     date = result.get(it, 0)
-    print "%.1f\t%s\t%s" % ((unix_now - date)/3600.0, it[0], it[1])
+    print("%.1f\t%s\t%s" % ((unix_now - date)/3600.0, it[0], it[1]))
