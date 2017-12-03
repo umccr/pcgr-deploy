@@ -1,0 +1,23 @@
+---
+- name: Wait for automatic system updates
+  shell: while pgrep unattended; do sleep 10; done;
+
+- name: Update system and install basics
+  become: true
+  become_user: root
+  package: 
+    name: "{{ item }}"
+    state: installed
+    update_cache: yes
+  with_items:
+      - python3-pip
+      - python3-venv
+
+- git:
+    repo: 'https://github.com/umccr/pcgr-webservice'
+    dest: "{{ pcgr_mount }}"
+
+- pip:
+  requirements: "{{ pcgr_mount }}/pcgr-webservice/requirements.txt
+  virtualenv: "{{ pcgr_mount }}"/pcgr-webservice/venv
+  virtualenv_command: /usr/bin/python3 -m venv
