@@ -1,5 +1,5 @@
 ---
-- name: Wait for automatic system updates
+- name: Wait for automatic system updates, if any
   shell: while pgrep unattended; do sleep 10; done;
 
 - name: Update system and install basics
@@ -18,6 +18,6 @@
     dest: "{{ pcgr_mount }}"
 
 - pip:
-  requirements: "{{ pcgr_mount }}/pcgr-webservice/requirements.txt
-  virtualenv: "{{ pcgr_mount }}"/pcgr-webservice/venv
+  requirements: "{{ pcgr_mount }}/pcgr-webservice/requirements.txt"
+  virtualenv: "{{ pcgr_mount }}/pcgr-webservice/venv"
   virtualenv_command: /usr/bin/python3 -m venv

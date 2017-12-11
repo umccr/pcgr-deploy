@@ -28,6 +28,8 @@ ostack:
 # PCGR
 #
 pcgr_mount: /mnt/work
+
+## DataBundle download sources per version
 #pcgr_release: v0.3.4
 #pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk&export=download
 #pcgr_databundle: pcgr.databundle.GRCh37.20170420.tgz
