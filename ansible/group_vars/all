@@ -31,11 +31,11 @@ pcgr_mount: /mnt/work
 
 ## DataBundle download sources per version
 #pcgr_release: v0.3.4
-#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk&export=download
+#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk
 #pcgr_databundle: pcgr.databundle.GRCh37.20170420.tgz
 #
 #pcgr_release: v0.4.1
-#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mNnpLOFNXdFV3bVE&export=download
+#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mNnpLOFNXdFV3bVE
 #pcgr_databundle: pcgr.databundle.GRCh37.20170803.tgz
 
 #pcgr_release: v0.4.2
@@ -49,3 +49,15 @@ pcgr_databundle: pcgr.databundle.GRCh37.20170810.tgz
 # HPC specific
 #
 pcgr_hpc_mount: "{{ pcgr_mount }}/raijin"
+
+
+# Webservice
+flaskapp_app_name: pcgr
+flaskapp_app_directory: "{{ pcgr_mount }}/pcgr-webservice"
+flaskapp_app_repository: https://github.com/umccr/pcgr-webservice
+flaskapp_python_version: 3
+flaskapp_use_postgresql: false
+flaskapp_nginx_server_name: pcgr.umccr.nopcode.org
+# XXX: Leaving those empty generates "[Errno 2] No such file or directory"
+flaskapp_app_pre_hooks: ["ls"]
+flaskapp_app_post_hooks: ["ls"]
