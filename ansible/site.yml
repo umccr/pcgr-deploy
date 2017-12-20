@@ -2,8 +2,7 @@
 - hosts: all
   user: ubuntu 
   become: yes
-  gather_facts: no
-  #gather_facts: yes
+  gather_facts: yes
   # pre_tasks:
   #  - name: Wait for automatic system updates
   #    shell: while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done;
@@ -12,8 +11,8 @@
   #  - action: setup
   
   roles:
-     - flask-stack
+#     - flask-stack
 #     - webservice
-#    - common
-#    - databundle
+    - common
+    - databundle
 #    - hpc

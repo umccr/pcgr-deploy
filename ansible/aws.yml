@@ -44,7 +44,8 @@
 
 - name: Deploy PCGR on AWS
   hosts: launched
-  become: True
+  become: False
+  user: ubuntu
   gather_facts: True
   roles:
     - common

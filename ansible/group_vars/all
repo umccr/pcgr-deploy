@@ -2,14 +2,15 @@
 #Amazon
 aws:
     instance_type: m4.large
-    spot_price: null
+    spot_price: 0.04
     keypair: mba_wwcrc
-    image_id: ami-43c12e21
+#    image_id: ami-43c12e21
+    image_id: ami-9fdf28fd # Ubuntu Artsy
     security_group: default
     region: ap-southeast-2
     zone: ap-southeast-2a
     volume_device: /dev/xvdb
-    volume_size: 50
+    volume_size: 40
 
 # OpenStack
 ostack:
@@ -42,9 +43,14 @@ pcgr_mount: /mnt/work
 #pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mY1ZnRzJ2bVVWMTQ
 #pcgr_databundle: pcgr.databundle.GRCh37.20170810.tgz
 
-pcgr_release: 0.4.2.1
-pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mY1ZnRzJ2bVVWMTQ
-pcgr_databundle: pcgr.databundle.GRCh37.20170810.tgz
+#pcgr_release: 0.4.2.1
+#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mY1ZnRzJ2bVVWMTQ
+#pcgr_databundle: pcgr.databundle.GRCh37.20170810.tgz
+
+pcgr_release: v0.5.3
+pcgr_docker_release: 0.5.3
+pcgr_databundle_url: https://drive.google.com/uc?id=1NSeMWpLVMBcCEDYpOLsuWSnKfZEaamip
+pcgr_databundle: pcgr.databundle.GRCh37.20171117.tgz
 
 # HPC specific
 #

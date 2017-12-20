@@ -1,6 +1,7 @@
 {
   "ImageId": "ami-60b45d02",
   "KeyName": "mba_wwcrc",
+  "Name": "pcgr",
   "UserData": "IyEvYmluL2Jhc2gKYXB0LWdldCB1cGRhdGUgJiYgYXB0LWdldCB1cGdyYWRlIC15CndnZXQgaHR0cHM6Ly9naXRodWIuY29tL3ZsYWRzYXZlbGlldi5rZXlzCmNhdCB2bGFkc2F2ZWxpZXYua2V5cyA+PiAvaG9tZS91YnVudHUvLnNzaC9hdXRob3JpemVkX2tleXMKc3VkbyBtb3VudCAvZGV2L3h2ZGIgL21udAo=",
   "SecurityGroupIds": [ "sg-841b45e2" ],
   "InstanceType": "m4.large",
