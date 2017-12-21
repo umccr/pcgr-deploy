@@ -7,10 +7,10 @@
   hostname:
     name: localhost
 
-- name: Create "{{ pcgr_mount }}" 
+- name: Create "{{ pcgr.mount }}" 
   become: true
   file:
-    path: "{{ pcgr_mount }}"
+    path: "{{ pcgr.mount }}"
     state: directory
     recurse: yes
     owner: ubuntu
@@ -40,7 +40,7 @@
 
 - name: Mount local work volume
   mount: 
-    path: "{{ pcgr_mount }}"
+    path: "{{ pcgr.mount }}"
     src: "{{ item.item }}"
     fstype: ext4 
     state: mounted
@@ -110,34 +110,34 @@
   become: true
   user: name=ubuntu groups=docker append=yes
 
-- name: Pull PCGR docker image for PCGR "{{ pcgr_docker_release }}"
+- name: Pull PCGR docker image for PCGR "{{ pcgr.docker_release }}"
   become: true
   docker_image:
     name: sigven/pcgr
     state: present
-    tag: "{{ pcgr_docker_release }}"
+    tag: "{{ docker_release }}"
 
-- name: Download and unpack PCGR software, release "{{ pcgr_release }}"
+- name: Download and unpack PCGR software, release "{{ pcgr.release }}"
   unarchive:
-    src: https://github.com/sigven/pcgr/archive/{{ pcgr_release }}.tar.gz
-    creates: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
-    dest: "{{ pcgr_mount }}"
+    src: https://github.com/sigven/pcgr/archive/{{ pcgr.release }}.tar.gz
+    creates: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
+    dest: "{{ pcgr.mount }}"
     remote_src: True
 
-- name: Give ubuntu rights to write on "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
+- name: Give ubuntu rights to write on "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
   become: true
   file:
-    path: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
+    path: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
     state: directory
     recurse: yes
     owner: ubuntu
     group: ubuntu
     mode: 0755
 
-- name: Creating default PCGR output directory on "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}/output"
+- name: Creating default PCGR output directory on "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}/output"
   become: true
   file:
-    path: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}/output"
+    path: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}/output"
     state: directory
     owner: ubuntu
     group: ubuntu
@@ -147,10 +147,10 @@
   become: false
   command: newgrp docker
 
-- name: "Symlink latest version to {{ pcgr_mount }}/pcgr"
+- name: "Symlink latest version to {{ pcgr.mount }}/pcgr"
   file:
-      src: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
-      dest: "{{ pcgr_mount }}/pcgr"
+      src: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
+      dest: "{{ pcgr.mount }}/pcgr"
       state: link
 
 - name: Setup local firewall

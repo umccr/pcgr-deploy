@@ -1,16 +1,18 @@
 ---
 #Amazon
 aws:
-    instance_type: m4.large
+    instance_type: t2.medium
+    instance_profile_name: pcgr
     spot_price: 0.04
     keypair: mba_wwcrc
 #    image_id: ami-43c12e21
-    image_id: ami-9fdf28fd # Ubuntu Artsy
+#    image_id: ami-9fdf28fd # Ubuntu Artsy
+    image_id: ami-5921d73b # PCGR v0.5.3
     security_group: default
     region: ap-southeast-2
     zone: ap-southeast-2a
     volume_device: /dev/xvdb
-    volume_size: 40
+    volume_size: 50
 
 # OpenStack
 ostack:
@@ -28,42 +30,31 @@ ostack:
 
 # PCGR
 #
-pcgr_mount: /mnt/work
+pcgr:
+    mount: /mnt/work
+    execution_id: tag_Test_Execution_ID
 
-## DataBundle download sources per version
-#pcgr_release: v0.3.4
-#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk
-#pcgr_databundle: pcgr.databundle.GRCh37.20170420.tgz
-#
-#pcgr_release: v0.4.1
-#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mNnpLOFNXdFV3bVE
-#pcgr_databundle: pcgr.databundle.GRCh37.20170803.tgz
+    ## DataBundle download sources per version
+    #release: v0.3.4
+    #databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk
+    #databundle: 'pcgr.databundle.GRCh37.20170420.tgz'
 
-#pcgr_release: v0.4.2
-#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mY1ZnRzJ2bVVWMTQ
-#pcgr_databundle: pcgr.databundle.GRCh37.20170810.tgz
+    #release: v0.4.1
+    #databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mNnpLOFNXdFV3bVE
+    #databundle: 'pcgr.databundle.GRCh37.20170803.tgz'
 
-#pcgr_release: 0.4.2.1
-#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mY1ZnRzJ2bVVWMTQ
-#pcgr_databundle: pcgr.databundle.GRCh37.20170810.tgz
+    #release: v0.4.2
+    #databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mY1ZnRzJ2bVVWMTQ
+    #databundle: 'pcgr.databundle.GRCh37.20170810.tgz'
 
-pcgr_release: v0.5.3
-pcgr_docker_release: 0.5.3
-pcgr_databundle_url: https://drive.google.com/uc?id=1NSeMWpLVMBcCEDYpOLsuWSnKfZEaamip
-pcgr_databundle: pcgr.databundle.GRCh37.20171117.tgz
+    #release: 0.4.2.1
+    #databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mY1ZnRzJ2bVVWMTQ
+    #databundle: 'pcgr.databundle.GRCh37.20170810.tgz'
 
-# HPC specific
-#
-pcgr_hpc_mount: "{{ pcgr_mount }}/raijin"
+    release: v0.5.3
+    docker_release: 0.5.3
+    databundle_url: https://drive.google.com/uc?id=1NSeMWpLVMBcCEDYpOLsuWSnKfZEaamip
+    databundle: 'pcgr.databundle.GRCh37.20171117.tgz'
 
-
-# Webservice
-flaskapp_app_name: pcgr
-flaskapp_app_directory: "{{ pcgr_mount }}/pcgr-webservice"
-flaskapp_app_repository: https://github.com/umccr/pcgr-webservice
-flaskapp_python_version: 3
-flaskapp_use_postgresql: false
-flaskapp_nginx_server_name: pcgr.umccr.nopcode.org
-# XXX: Leaving those empty generates "[Errno 2] No such file or directory"
-flaskapp_app_pre_hooks: ["ls"]
-flaskapp_app_post_hooks: ["ls"]
+    # HPC specific
+    hpc_mount: "/mnt/work/raijin"
