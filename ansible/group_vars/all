@@ -32,7 +32,9 @@ ostack:
 #
 pcgr:
     mount: /mnt/work
-    execution_id: tag_Test_Execution_ID
+    execution_id: noexecidfound
+    input_vcf: novcffound 
+    s3_vcf_bucket: umccr-pcgr
 
     ## DataBundle download sources per version
     #release: v0.3.4

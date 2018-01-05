@@ -97,6 +97,7 @@
   with_items:
       - docker-py
       - toml
+      - boto
       - awscli
 
 - name: Add SSH keys for UMCCR team
