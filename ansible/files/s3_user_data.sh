@@ -2,8 +2,10 @@
 
 export BUCKET="s3://umccr-pcgr/"
 
-cd /mnt/pcgr
-sudo chown -R ubuntu:ubuntu /mnt/pcgr-0.5.3
+sudo apt install -y awscli
+sudo mount /dev/xvdb /mnt/work
+cd /mnt/work/pcgr
+sudo chown -R ubuntu:ubuntu /mnt/work/pcgr-0.5.3
 latest_vcf=`aws s3 ls $BUCKET | sort | tail -n 1 | grep -v output |  awk '{print $4}'`
 aws s3 cp ${BUCKET}${latest_vcf} .
 tabix $latest_vcf
