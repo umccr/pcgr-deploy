@@ -13,6 +13,7 @@
              name: pcgr
              pcgrexecid: "{{ pcgr.execution_id }}"
          spot_price: "{{ aws.spot_price }}"
+         user_data: "{{ lookup('file', 'files/s3_user_data.sh') }}"
          image: "{{ aws.image_id }}"
          keypair: "{{ aws.keypair }}"
          region: "{{ aws.region }}"
