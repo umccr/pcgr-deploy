@@ -27,7 +27,7 @@ def __main__():
    parser.add_argument('--no_validate', dest="no_validate", action = "store_true")
 
 #   docker_image_version = 'sigven/pcgr:' + str(version)
-   docker_image_version = 'umccr/pcgr'
+   docker_image_version = 'umccr/pcgr:0.5.3-hotfix-validation'
    args = parser.parse_args()
    
    overwrite = 0

@@ -12,6 +12,6 @@ aws s3 cp ${BUCKET}${latest_vcf} .
 tabix -f $latest_vcf
 #XXX: horrible hotfixing ongoing, bear with me for now
 wget https://raw.githubusercontent.com/brainstorm/pcgr-deploy/master/ansible/files/pcgr_defaults.toml
-rm pcgr.py && wget https://raw.githubusercontent.com/brainstorm/pcgr-deploy/master/ansible/files/pcgr.py
+rm pcgr.py && wget https://raw.githubusercontent.com/brainstorm/pcgr-deploy/master/ansible/files/pcgr.py && chmod +x pcgr.py
 python pcgr.py --input_vcf $latest_vcf . output pcgr_defaults.toml $latest_vcf
 aws s3 cp --recursive output ${BUCKET}${latest_vcf}-output
