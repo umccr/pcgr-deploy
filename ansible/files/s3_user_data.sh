@@ -10,6 +10,8 @@ sudo chown -R ubuntu:ubuntu /mnt/work/pcgr-0.5.3
 latest_vcf=`aws s3 ls $BUCKET | sort | tail -n 1 | grep -v output |  awk '{print $4}'`
 aws s3 cp ${BUCKET}${latest_vcf} .
 tabix -f $latest_vcf
+#XXX: horrible hotfixing ongoing, bear with me for now
 wget https://raw.githubusercontent.com/brainstorm/pcgr-deploy/master/ansible/files/pcgr_defaults.toml
-python pcgr.py --no_validate --input_vcf $latest_vcf . output pcgr_defaults.toml $latest_vcf
+rm pcgr.py && wget https://raw.githubusercontent.com/brainstorm/pcgr-deploy/master/ansible/files/pcgr.py
+python pcgr.py --input_vcf $latest_vcf . output pcgr_defaults.toml $latest_vcf
 aws s3 cp --recursive output ${BUCKET}${latest_vcf}-output
