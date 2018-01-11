@@ -2,11 +2,12 @@
 
 export BUCKET="s3://umccr-pcgr/"
 
-sudo apt install -y awscli
 sudo cp /usr/share/zoneinfo/Australia/Melbourne /etc/localtime
 sudo mount /dev/xvdb /mnt/work
 cd /mnt/work/pcgr
 sudo chown -R ubuntu:ubuntu /mnt/work/pcgr-0.5.3
+while pgrep unattended; do sleep 10; done;
+sudo apt install -y awscli
 latest_vcf=`aws s3 ls $BUCKET | sort | tail -n 1 | grep -v output |  awk '{print $4}'`
 aws s3 cp ${BUCKET}${latest_vcf} .
 tabix -f $latest_vcf
