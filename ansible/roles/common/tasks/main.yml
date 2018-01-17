@@ -84,6 +84,7 @@
       - python-docker
       - tabix
       - htop
+      - certbot
       - nfs-common
       - python-pip
       - python3-pip
