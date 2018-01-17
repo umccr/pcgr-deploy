@@ -1,6 +1,6 @@
 ---
 - hosts: all
-  user: ubuntu 
+  user: "{{ os_user }}" 
   become: yes
   gather_facts: yes
   # pre_tasks:
@@ -11,8 +11,6 @@
   #  - action: setup
   
   roles:
-#     - flask-stack
-#     - webservice
     - common
     - databundle
 #    - hpc

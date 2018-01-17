@@ -16,6 +16,6 @@
     remote_src: yes
     src: "{{ pcgr.mount }}/{{ pcgr.databundle }}"
     dest: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
-    owner: ubuntu
-    group: ubuntu
+    owner: "{{ os_user }}" 
+    group: "{{ os_user }}"
     creates: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}/data/.vep"

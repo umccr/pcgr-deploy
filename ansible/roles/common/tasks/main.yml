@@ -13,8 +13,8 @@
     path: "{{ pcgr.mount }}"
     state: directory
     recurse: yes
-    owner: ubuntu
-    group: ubuntu
+    owner: "{{ os_user }}"
+    group: "{{ os_user }}"
     mode: 0755
 
 - name: "Check which of {{ aws.volume_device }} or {{ ostack.volume_device }} we have present"
@@ -103,14 +103,14 @@
 
 - name: Add SSH keys for UMCCR team
   authorized_key:
-    user: ubuntu
+    user: "{{ os_user }}"
     state: present
     key: "{{ lookup('file', item) }}"
   with_fileglob: "files/public_keys/*.pub"
 
 - name: Add user to docker group
   become: true
-  user: name=ubuntu groups=docker append=yes
+  user: name="{{ os_user }}" groups=docker append=yes
 
 - name: Pull PCGR docker image for PCGR "{{ pcgr.docker_release }}"
   become: true
@@ -126,14 +126,14 @@
     dest: "{{ pcgr.mount }}"
     remote_src: True
 
-- name: Give ubuntu rights to write on "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
+- name: Give "{{ os_user }}" rights to write on "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
   become: true
   file:
     path: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
     state: directory
     recurse: yes
-    owner: ubuntu
-    group: ubuntu
+    owner: "{{ os_user }}"
+    group: "{{ os_user }}"
     mode: 0755
 
 - name: Creating default PCGR output directory on "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}/output"
@@ -141,8 +141,8 @@
   file:
     path: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}/output"
     state: directory
-    owner: ubuntu
-    group: ubuntu
+    owner: "{{ os_user }}"
+    group: "{{ os_user }}"
     mode: 0755
 
 - name: Refresh group info

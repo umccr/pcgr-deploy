@@ -1,9 +1,11 @@
 ---
+os_user: vagrant
+
 #Amazon
 aws:
     instance_type: t2.medium
     instance_profile_name: pcgr
-    spot_price: 0.09
+#    spot_price: null
     keypair: mba_wwcrc
 #    image_id: ami-43c12e21
 #    image_id: ami-9fdf28fd # Ubuntu Artsy
