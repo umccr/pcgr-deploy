@@ -2,4 +2,5 @@
 *.tfstate
 *.tfstate.backup
 *.log
+.vagrant
 .DS_Store

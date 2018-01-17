@@ -71,7 +71,7 @@
   become_user: root
   package: 
     name: "{{ item }}"
-    state: installed
+    state: latest 
     update_cache: yes
   with_items:
       - git
@@ -94,7 +94,7 @@
   become: true
   pip:
     name: "{{ item }}"
-    state: installed
+    state: latest 
   with_items:
       - docker-py
       - toml
@@ -110,14 +110,17 @@
 
 - name: Add user to docker group
   become: true
-  user: name="{{ os_user }}" groups=docker append=yes
+  user: 
+      name: "{{ os_user }}" 
+      groups: docker
+      append: yes
 
 - name: Pull PCGR docker image for PCGR "{{ pcgr.docker_release }}"
   become: true
   docker_image:
     name: sigven/pcgr
     state: present
-    tag: "{{ docker_release }}"
+    tag: "{{ pcgr.docker_release }}"
 
 - name: Download and unpack PCGR software, release "{{ pcgr.release }}"
   unarchive:
