@@ -3,7 +3,7 @@ os_user: vagrant
 
 #Amazon
 aws:
-    instance_type: t2.medium
+    instance_type: m4.large
     instance_profile_name: pcgr
 #    spot_price: null
     keypair: mba_wwcrc
