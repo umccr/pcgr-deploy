@@ -1,5 +1,5 @@
 ---
-os_user: vagrant
+os_user: ubuntu
 
 #Amazon
 aws:
