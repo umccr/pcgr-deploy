@@ -1,0 +1,42 @@
+﻿AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: >-
+  An Amazon S3 trigger that retrieves metadata for the object that has been
+  updated.
+Resources:
+  triggerPCGR:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.6
+      CodeUri: .
+      Description: >-
+        An Amazon S3 trigger that retrieves metadata for the object that has
+        been updated.
+      MemorySize: 128
+      Timeout: 3
+      Role: 'arn:aws:iam::<AWS_ACCOUNT_ID>:role/service-role/s3_readonly_lambda'
+      Events:
+        BucketEvent1:
+          Type: S3
+          Properties:
+            Bucket:
+              Ref: Bucket1
+            Events:
+              - 's3:ObjectCreated:*'
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: suffix
+                    Value: .vcf.gz
+      Environment:
+        Variables:
+          ST2_API_KEY: >-
+            <STACKSTORM_WEBHOOK_HERE> 
+          ST2_HOST: <YOUR_ST2_HOST>
+          ST2_API_URL: 'https://<YOUR_ST2_HOST>/api/v1/webhooks/st2'
+      Tags:
+        'lambda-console:blueprint': s3-get-object-python3
+        service: arteria
+  Bucket1:
+    Type: 'AWS::S3::Bucket'

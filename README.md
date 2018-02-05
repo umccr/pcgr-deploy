@@ -18,10 +18,11 @@ Tweak files `ansible/group_vars/all` and `ansible.site.yml`'s roles section acco
 The following lines will install the deployment modules, deploy PCGR and run its built-in example as a validation:
 
 ```
-conda install -c conda-forge ansible>=2.3
-ansible-playbook aws.yaml
+python3 -m venv venv && source venv/bin/activate && pip install ansible
+ansible-playbook aws.yaml -e 'ansible_python_interpreter=/usr/bin/python3'
+ansible-playbook aws.yaml -e 'ansible_python_interpreter=/usr/bin/python3' --extra-vars='{"instance_tags": { "pcgr_id": "test_tag"}}'
 ssh ubuntu@<AWS INSTANCE>
-cd /mnt/work/pcgr-*
+cd /mnt/work/pcgr
 ./pcgr.py --input_vcf examples/tumor_sample.COAD.vcf.gz --input_cna examples/tumor_sample.COAD.cna.tsv /mnt/work/pcgr-* output tumor_sample.COAD
 ```
 
@@ -77,4 +78,4 @@ Open ended experiment for now, there are some errors that [need some attention](
 FAQ
 ===
 
-`ERROR: package is not a legal parameter in an Ansible task or handler` is a symptom of a too old ansible version (probably 1.9.x). You need 2.x to deploy this.
+`ERROR: package is not a legal parameter in an Ansible task or handler` is a symptom of a too old ansible version (probably 1.9.x). You need Ansible >=2.x to deploy this.

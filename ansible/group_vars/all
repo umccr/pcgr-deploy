@@ -1,10 +1,15 @@
 ---
+os_user: ubuntu
+
 #Amazon
 aws:
-    instance_type: m4.large
-    spot_price: null
+    instance_type: m4.xlarge
+    instance_profile_name: pcgr
+#    spot_price: 0.6
     keypair: mba_wwcrc
-    image_id: ami-43c12e21
+#    image_id: ami-43c12e21
+#    image_id: ami-9fdf28fd # Ubuntu Artsy
+    image_id: ami-5921d73b # PCGR v0.5.3
     security_group: default
     region: ap-southeast-2
     zone: ap-southeast-2a
@@ -27,25 +32,33 @@ ostack:
 
 # PCGR
 #
-pcgr_mount: /mnt/work
+pcgr:
+    mount: /mnt/work
+    execution_id: noexecidfound
+    input_vcf: novcffound 
+    s3_vcf_bucket: umccr-pcgr
 
-## DataBundle download sources per version
-#pcgr_release: v0.3.4
-#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk&export=download
-#pcgr_databundle: pcgr.databundle.GRCh37.20170420.tgz
-#
-#pcgr_release: v0.4.1
-#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mNnpLOFNXdFV3bVE&export=download
-#pcgr_databundle: pcgr.databundle.GRCh37.20170803.tgz
+    ## DataBundle download sources per version
+    #release: v0.3.4
+    #databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk
+    #databundle: 'pcgr.databundle.GRCh37.20170420.tgz'
 
-#pcgr_release: v0.4.2
-#pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mY1ZnRzJ2bVVWMTQ
-#pcgr_databundle: pcgr.databundle.GRCh37.20170810.tgz
+    #release: v0.4.1
+    #databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mNnpLOFNXdFV3bVE
+    #databundle: 'pcgr.databundle.GRCh37.20170803.tgz'
 
-pcgr_release: 0.4.2.1
-pcgr_databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mY1ZnRzJ2bVVWMTQ
-pcgr_databundle: pcgr.databundle.GRCh37.20170810.tgz
+    #release: v0.4.2
+    #databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mY1ZnRzJ2bVVWMTQ
+    #databundle: 'pcgr.databundle.GRCh37.20170810.tgz'
 
-# HPC specific
-#
-pcgr_hpc_mount: "{{ pcgr_mount }}/raijin"
+    #release: 0.4.2.1
+    #databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mY1ZnRzJ2bVVWMTQ
+    #databundle: 'pcgr.databundle.GRCh37.20170810.tgz'
+
+    release: v0.5.3
+    docker_release: 0.5.3
+    databundle_url: https://drive.google.com/uc?id=1NSeMWpLVMBcCEDYpOLsuWSnKfZEaamip
+    databundle: 'pcgr.databundle.GRCh37.20171117.tgz'
+
+    # HPC specific
+    hpc_mount: "/mnt/work/raijin"

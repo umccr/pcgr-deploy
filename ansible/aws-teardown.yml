@@ -1,0 +1,10 @@
+---
+- hosts: tag_name_pcgr
+  connection: local
+  gather_facts: yes
+  tasks:
+    - name: Teardown EC2 instance
+      ec2:
+         state: "absent"
+         region: "{{ aws.region }}"
+         instance_ids: "{{ ec2_id }}"

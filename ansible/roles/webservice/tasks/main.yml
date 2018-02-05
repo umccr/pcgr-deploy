@@ -1,23 +1,30 @@
 ---
-- name: Wait for automatic system updates, if any
-  shell: while pgrep unattended; do sleep 10; done;
+#- name: Wait for automatic system updates, if any
+#  shell: while pgrep unattended; do sleep 10; done;
 
-- name: Update system and install basics
-  become: true
-  become_user: root
-  package: 
-    name: "{{ item }}"
-    state: installed
-    update_cache: yes
-  with_items:
-      - python3-pip
-      - python3-venv
+# - name: Update system and install basics
+#   become: true
+#   become_user: root
+#   package: 
+#     name: "{{ item }}"
+#     state: installed
+#     update_cache: yes
+#   with_items:
+#       - python3-pip
+#       - python3-venv
 
-- git:
-    repo: 'https://github.com/umccr/pcgr-webservice'
-    dest: "{{ pcgr_mount }}"
+# - git:
+#   repo: 'https://github.com/umccr/pcgr-webservice'
+#   dest: "{{ pcgr_mount }}/pcgr-webservice"
 
-- pip:
-  requirements: "{{ pcgr_mount }}/pcgr-webservice/requirements.txt"
-  virtualenv: "{{ pcgr_mount }}/pcgr-webservice/venv"
-  virtualenv_command: /usr/bin/python3 -m venv
+# - name: Create virtual environment for the webservice
+#   pip:
+#     requirements: "{{ pcgr_mount }}/pcgr-webservice/requirements.txt"
+#     virtualenv: "{{ pcgr_mount }}/pcgr-webservice/venv"
+#     virtualenv_command: /usr/bin/python3 -m venv venv
+
+# - name: Spawn webservice server
+#   shell: "source {{ pcgr_mount }}/pcgr-webservice/venv/bin/activate && python manage.py runserver &"
+#   args:
+#     executable: /bin/bash
+#     chdir: "{{ pcgr_mount }}/pcgr-webservice"

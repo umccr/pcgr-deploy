@@ -7,14 +7,14 @@
   hostname:
     name: localhost
 
-- name: Create "{{ pcgr_mount }}" 
+- name: Create "{{ pcgr.mount }}" 
   become: true
   file:
-    path: "{{ pcgr_mount }}"
+    path: "{{ pcgr.mount }}"
     state: directory
     recurse: yes
-    owner: ubuntu
-    group: ubuntu
+    owner: "{{ os_user }}"
+    group: "{{ os_user }}"
     mode: 0755
 
 - name: "Check which of {{ aws.volume_device }} or {{ ostack.volume_device }} we have present"
@@ -40,7 +40,7 @@
 
 - name: Mount local work volume
   mount: 
-    path: "{{ pcgr_mount }}"
+    path: "{{ pcgr.mount }}"
     src: "{{ item.item }}"
     fstype: ext4 
     state: mounted
@@ -62,7 +62,7 @@
 #  become_user: root
 #  shell: while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done;
 
-# Trying target unattended-upgrades instead? 
+# Trying target unattended-upgrades, works every time
 - name: Wait for automatic system updates
   shell: while pgrep unattended; do sleep 10; done;
 
@@ -71,7 +71,7 @@
   become_user: root
   package: 
     name: "{{ item }}"
-    state: installed
+    state: latest 
     update_cache: yes
   with_items:
       - git
@@ -83,68 +83,79 @@
       - docker.io
       - python-docker
       - tabix
+      - htop
+      - certbot
       - nfs-common
       - python-pip
       - python3-pip
       - python3-venv
 
-- name: Make sure docker-py is installed
+- name: Make sure vital python packages are installed system-wide
+  become: true
   pip:
-    name: docker-py
-    state: latest
+    name: "{{ item }}"
+    state: latest 
+  with_items:
+      - docker-py
+      - toml
+      - boto
+      - awscli
 
 - name: Add SSH keys for UMCCR team
   authorized_key:
-    user: ubuntu
+    user: "{{ os_user }}"
     state: present
     key: "{{ lookup('file', item) }}"
   with_fileglob: "files/public_keys/*.pub"
 
 - name: Add user to docker group
   become: true
-  user: name=ubuntu groups=docker append=yes
+  user: 
+      name: "{{ os_user }}" 
+      groups: docker
+      append: yes
 
-- name: Pull PCGR docker image for PCGR "{{ pcgr_release }}"
+- name: Pull PCGR docker image for PCGR "{{ pcgr.docker_release }}"
   become: true
   docker_image:
     name: sigven/pcgr
     state: present
-    tag: "{{ pcgr_release }}"
+    tag: "{{ pcgr.docker_release }}"
 
-- name: Download and unpack PCGR software, release "{{ pcgr_release }}"
+- name: Download and unpack PCGR software, release "{{ pcgr.release }}"
   unarchive:
-    src: https://github.com/sigven/pcgr/archive/{{ pcgr_release }}.tar.gz
-    creates: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
-    dest: "{{ pcgr_mount }}"
+    src: https://github.com/sigven/pcgr/archive/{{ pcgr.release }}.tar.gz
+    creates: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
+    dest: "{{ pcgr.mount }}"
     remote_src: True
 
-- name: Give ubuntu rights to write on "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
+- name: Give "{{ os_user }}" rights to write on "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
   become: true
   file:
-    path: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
+    path: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
     state: directory
     recurse: yes
-    owner: ubuntu
-    group: ubuntu
+    owner: "{{ os_user }}"
+    group: "{{ os_user }}"
     mode: 0755
 
-- name: Creating default PCGR output directory on "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}/output"
+- name: Creating default PCGR output directory on "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}/output"
   become: true
   file:
-    path: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}/output"
+    path: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}/output"
     state: directory
-    owner: ubuntu
-    group: ubuntu
+    owner: "{{ os_user }}"
+    group: "{{ os_user }}"
     mode: 0755
 
 - name: Refresh group info
   become: false
   command: newgrp docker
 
-- name: "Symlink latest version to {{ pcgr_mount }}/pcgr"
+- name: "Symlink latest version to {{ pcgr.mount }}/pcgr"
   file:
-      src: "{{ pcgr_mount }}/pcgr-{{ pcgr_release }}"
-      dest: "{{ pcgr_mount }}/pcgr"
+      src: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
+      dest: "{{ pcgr.mount }}/pcgr"
       state: link
 
 - name: Setup local firewall
