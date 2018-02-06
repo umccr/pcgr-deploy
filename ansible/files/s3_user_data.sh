@@ -8,13 +8,45 @@ cd /mnt/work/pcgr
 sudo chown -R ubuntu:ubuntu /mnt/work/pcgr-0.5.3
 while pgrep unattended; do sleep 10; done;
 while pgrep dpkg; do sleep 10; done;
-sudo apt install -y awscli
-latest_vcf=`aws s3 ls $BUCKET | sort | tail -n 1 | grep -v output |  awk '{print $4}'`
-aws s3 cp ${BUCKET}${latest_vcf} .
-tabix -f $latest_vcf
-#XXX: horrible hotfixing ongoing, bear with me for now
-wget https://raw.githubusercontent.com/brainstorm/pcgr-deploy/master/ansible/files/pcgr_defaults.toml
-rm pcgr.py && wget https://raw.githubusercontent.com/brainstorm/pcgr-deploy/master/ansible/files/pcgr.py && chmod +x pcgr.py
-docker pull umccr/pcgr
-python pcgr.py --input_vcf $latest_vcf . output pcgr_defaults.toml $latest_vcf
-aws s3 cp --recursive output ${BUCKET}${latest_vcf}-output
+
+# do not rely on system packages for awscli, get from pip instead
+sudo pip install awscli
+
+# Grab the latest VCF
+#latest_vcf=`aws s3 ls $BUCKET | sort | tail -n 1 | grep -v output |  awk '{print $4}'`
+# XXX: Grab all vcfs instead, making better use of the instance time
+
+vcfs=`aws s3 ls ${BUCKET} | sort | grep -v output | awk '{print $4}'`
+
+for latest_vcf in $vcfs
+do
+	aws s3 cp ${BUCKET}${latest_vcf} .
+
+	#XXX: horrible hotfixing ongoing, bear with me for now until https://github.com/sigven/pcgr/issues/15 gets fixed
+	rm pcgr.py && wget https://raw.githubusercontent.com/brainstorm/pcgr-deploy/master/ansible/files/pcgr.py && chmod +x pcgr.py
+	docker pull umccr/pcgr
+
+	tar xvfz $latest_vcf
+	no_ext=${latest_vcf%.*.*}
+	vcf=${no_ext}.vcf.gz
+
+	echo "Tabixing ${vcf}"
+	tabix -f ${vcf}
+
+	case "$vcf" in
+		*-somatic-*.vcf.gz) echo "Running somatic"
+				 			python pcgr.py --input_vcf ${vcf} . output pcgr_configuration_somatic.toml ${vcf} ;;
+		*-germline-*.vcf.gz) echo "Running germline"
+	  			  			python pcgr.py --input_vcf ${vcf} . output pcgr_configuration_germline.toml ${vcf} ;;
+		*) echo "Cannot find somatic nor germline samples" ;;
+	esac
+
+	#aws s3 cp --recursive output ${BUCKET}${no_ext}-output
+	tar cvfz ${no_ext}-output.tar.gz output
+	aws s3 cp ${no_ext}-output.tar.gz ${BUCKET}
+
+	# rename the input file so that it doesn't get re-analized on next run(s)
+	aws s3 mv ${BUCKET}${latest_vcf} ${BUCKET}${no_ext}-archived
+
+	echo "All done for $vcf"
+done
