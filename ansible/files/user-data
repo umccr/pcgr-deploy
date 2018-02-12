@@ -30,9 +30,6 @@ do
     no_ext=${latest_vcf%.*.*}
     vcf=${no_ext}.vcf.gz
 
-    echo "Tabixing ${vcf}"
-    tabix -f ${vcf}
-
     case "$vcf" in
         *-somatic-*.vcf.gz) echo "Running somatic"
                     python pcgr.py --input_vcf ${vcf} . output pcgr_configuration_somatic.toml ${vcf} ;;
