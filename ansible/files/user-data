@@ -30,17 +30,24 @@ do
     no_ext=${latest_vcf%.*.*}
     vcf=${no_ext}.vcf.gz
 
-    case "$vcf" in
-        *-somatic-*.vcf.gz) echo "Running somatic"
-                    python pcgr.py --input_vcf ${vcf} . output pcgr_configuration_somatic.toml ${vcf} ;;
-        *-germline-*.vcf.gz) echo "Running germline"
-                    python pcgr.py --input_vcf ${vcf} . output pcgr_configuration_germline.toml ${vcf} ;;
+    # XXX: stable names
+    fixed_samplename=`echo *.vcf.gz`
+    case $fixed_samplename in
+        somatic-*-pcgr.vcf.gz) echo "Running somatic"
+#               python pcgr.py --input_vcf ${vcf} --input_cna somatic-cnvkit-pcgr.tsv . output pcgr_configuration.toml ${vcf} ;;
+                python pcgr.py --input_vcf ${fixed_samplename} --input_cna somatic-cnvkit-pcgr.tsv . output pcgr_configuration.toml ${fixed_samplename} ;;
+        germline-*-pcgr.vcf.gz) echo "Running germline"
+#                python pcgr.py --input_vcf ${vcf} . output pcgr_configuration.toml ${vcf} ;;
+                python pcgr.py --input_vcf ${fixed_samplename} . output pcgr_configuration.toml ${fixed_samplename} ;;
         *) echo "Cannot find somatic nor germline samples" ;;
     esac
 
     #aws s3 cp --recursive output ${BUCKET}${no_ext}-output
     tar cvfz ${no_ext}-output.tar.gz output
     aws s3 cp ${no_ext}-output.tar.gz ${BUCKET}
+
+    # cleanup before next run
+    rm *.tar.gz *.vcf.gz *.tbi *.tsv
 
     # rename the input file so that it doesn't get re-analized on next run(s)
     aws s3 mv ${BUCKET}${latest_vcf} ${BUCKET}${no_ext}-archived.tar.gz
