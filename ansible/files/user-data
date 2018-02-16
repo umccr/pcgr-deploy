@@ -51,7 +51,7 @@ do
     aws s3 cp ${no_ext}-output.tar.gz ${BUCKET}
 
     # cleanup before next run
-    rm *.log *.tar.gz *.vcf.gz *.tbi *.tsv *.toml && rm -rf output_${no_ext} && mkdir output
+    rm *.log *.tar.gz *.vcf.gz *.tbi *.tsv *.toml && rm -rf output output_${no_ext} && mkdir -p output
 
     # rename the input file so that it doesn't get re-analized on next run(s)
     aws s3 mv ${BUCKET}${latest_vcf} ${BUCKET}${no_ext}-archived.tar.gz
