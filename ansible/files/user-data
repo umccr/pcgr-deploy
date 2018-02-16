@@ -3,8 +3,12 @@
 export BUCKET="s3://pcgr/"
 
 sudo cp /usr/share/zoneinfo/Australia/Melbourne /etc/localtime
+
+sudo mkdir /mnt/work
 sudo mount /dev/xvdb /mnt/work
+
 cd /mnt/work/pcgr
+
 sudo chown -R ubuntu:ubuntu /mnt/work/pcgr-0.5.3
 while pgrep unattended; do sleep 10; done;
 while pgrep dpkg; do sleep 10; done;
@@ -12,11 +16,13 @@ while pgrep dpkg; do sleep 10; done;
 # do not rely on system packages for awscli, get from pip instead
 sudo pip install awscli
 
-# Grab the latest VCF
-#latest_vcf=`aws s3 ls $BUCKET | sort | tail -n 1 | grep -v output |  awk '{print $4}'`
-# XXX: Grab all vcfs instead, making better use of the instance time
+vcfs=`aws s3 ls ${BUCKET} | sort | grep -v output | grep -v archived | awk '{print $4}'`
 
-vcfs=`aws s3 ls ${BUCKET} | sort | grep -v output | awk '{print $4}'`
+if [ -z $vcfs ]
+then
+    echo "No VCF files to process, bailing out..."
+    exit -1
+fi
 
 #XXX: horrible hotfixing ongoing, bear with me for now until https://github.com/sigven/pcgr/issues/15 gets fixed
 rm pcgr.py && wget https://raw.githubusercontent.com/brainstorm/pcgr-deploy/master/ansible/files/pcgr.py && chmod +x pcgr.py
@@ -32,9 +38,9 @@ do
 
     case ${vcf} in
         *-somatic.vcf.gz) echo "Running somatic"
-                python pcgr.py --input_vcf ${vcf} --input_cna ${no_ext}.tsv . output ${no_ext}.toml ${no_ext} --force-overwrite >& ${no_ext}.log ;;
+                python pcgr.py --input_vcf ${vcf} --input_cna ${no_ext}.tsv . output ${no_ext}.toml ${no_ext} >& ${no_ext}.log ;;
         *-germline.vcf.gz) echo "Running germline"
-                python pcgr.py --input_vcf ${vcf} . output ${no_ext}.toml ${no_ext} --force-overwrite >& ${no_ext}.log ;;
+                python pcgr.py --input_vcf ${vcf} . output ${no_ext}.toml ${no_ext} >& ${no_ext}.log ;;
         *) echo "Cannot find somatic nor germline samples" ;;
     esac
 
