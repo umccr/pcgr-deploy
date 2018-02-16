@@ -45,13 +45,16 @@ do
     esac
 
     # Make sure the output dir is uniquely identified too before storing it back on S3
-    echo "Renaming output dir to sample ${no_ext}... \n"
+    echo "Renaming output dir to sample ${no_ext}..."
     mv output output_${no_ext}
     tar cvfz ${no_ext}-output.tar.gz output_${no_ext} ${no_ext}.toml ${no_ext}.log
     aws s3 cp ${no_ext}-output.tar.gz ${BUCKET}
 
     # cleanup before next run
-    rm *.log *.tar.gz *.vcf.gz *.tbi *.tsv *.toml && rm -rf output output_${no_ext} && mkdir -p output
+    rm *.tsv
+    rm *.log *.tar.gz *.vcf.gz *.tbi *.toml
+    rm -rf output_${no_ext}
+    mkdir -p output
 
     # rename the input file so that it doesn't get re-analized on next run(s)
     aws s3 mv ${BUCKET}${latest_vcf} ${BUCKET}${no_ext}-archived.tar.gz
