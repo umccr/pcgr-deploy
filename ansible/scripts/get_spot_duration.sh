@@ -3,4 +3,4 @@
 python get_spot_duration.py \
 	--region ap-southeast-2 \
 	--product-description 'Linux/UNIX' \
-	--bids m4.large:0.04
+	--bids m5.xlarge:0.06

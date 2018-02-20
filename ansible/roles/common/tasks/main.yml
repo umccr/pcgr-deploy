@@ -3,6 +3,10 @@
   debug:
     msg: "{{ ansible_mounts }}"
 
+- name: set timezone
+  timezone:
+    name: "{{ timezone }}"
+
 - name: Setup hostname to avoid unable to resolve errors
   hostname:
     name: localhost
