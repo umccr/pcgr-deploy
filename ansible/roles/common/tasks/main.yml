@@ -133,6 +133,11 @@
     dest: "{{ pcgr.mount }}"
     remote_src: True
 
+- name: Copy the AWS SQS file consumer daemon
+  copy:
+    src: files/sqs_consumer.py
+    dest: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
+
 - name: Give "{{ os_user }}" rights to write on "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
   become: true
   file:

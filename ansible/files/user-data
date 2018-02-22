@@ -1,63 +1,8 @@
-#!/bin/bash
-
-export BUCKET="s3://pcgr/"
-
-sudo cp /usr/share/zoneinfo/Australia/Melbourne /etc/localtime
+#!/bin/sh
 
 sudo mkdir /mnt/work
 sudo mount /dev/xvdb /mnt/work
 
 cd /mnt/work/pcgr
 
-sudo chown -R ubuntu:ubuntu /mnt/work/pcgr-0.5.3
-while pgrep unattended; do sleep 10; done;
-while pgrep dpkg; do sleep 10; done;
-
-# do not rely on system packages for awscli, get from pip instead
-sudo pip install awscli
-
-vcfs=`aws s3 ls ${BUCKET} | sort | grep -v output | grep -v archived | awk '{print $4}'`
-
-if [ -z $vcfs ]
-then
-    echo "No VCF files to process, bailing out..."
-    exit -1
-fi
-
-#XXX: horrible hotfixing ongoing, bear with me for now until https://github.com/sigven/pcgr/issues/15 gets fixed
-rm pcgr.py && wget https://raw.githubusercontent.com/brainstorm/pcgr-deploy/master/ansible/files/pcgr.py && chmod +x pcgr.py
-docker pull umccr/pcgr
-
-for latest_vcf in $vcfs
-do
-    aws s3 cp ${BUCKET}${latest_vcf} .
-
-    tar xvfz $latest_vcf
-    no_ext=${latest_vcf%.*.*}
-    vcf=${no_ext}.vcf.gz
-
-    case ${vcf} in
-        *-somatic.vcf.gz) echo "Running somatic"
-                python pcgr.py --input_vcf ${vcf} --input_cna ${no_ext}.tsv . output ${no_ext}.toml ${no_ext} >& ${no_ext}.log ;;
-        *-germline.vcf.gz) echo "Running germline"
-                python pcgr.py --input_vcf ${vcf} . output ${no_ext}.toml ${no_ext} >& ${no_ext}.log ;;
-        *) echo "Cannot find somatic nor germline samples" ;;
-    esac
-
-    # Make sure the output dir is uniquely identified too before storing it back on S3
-    echo "Renaming output dir to sample ${no_ext}..."
-    mv output output_${no_ext}
-    tar cvfz ${no_ext}-output.tar.gz output_${no_ext} ${no_ext}.toml ${no_ext}.log
-    aws s3 cp ${no_ext}-output.tar.gz ${BUCKET}
-
-    # cleanup before next run
-    rm *.tsv
-    rm *.log *.tar.gz *.vcf.gz *.tbi *.toml
-    rm -rf output_${no_ext}
-    mkdir -p output
-
-    # rename the input file so that it doesn't get re-analized on next run(s)
-    aws s3 mv ${BUCKET}${latest_vcf} ${BUCKET}${no_ext}-archived.tar.gz
-
-    echo "All done for $vcf"
-done
+python3 sqs_consumer.py &
