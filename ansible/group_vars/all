@@ -8,13 +8,14 @@ aws:
     instance_profile_name: pcgr
     spot_price: 0.4
     keypair: arteria
-#    image_id: ami-9fdf28fd # Ubuntu Artsy
-    image_id: ami-5921d73b # PCGR v0.5.3
+    image_id: ami-5921d73b # PCGR v0.5.3, for deployment
+    base_image: ami-78ac551a # For new AMIs/releases
     security_group: default
     region: ap-southeast-2
     zone: ap-southeast-2a
     volume_device: /dev/xvdb
     volume_size: 50
+	vcf_bucket: pcgr
 
 # OpenStack
 ostack:
@@ -33,10 +34,9 @@ ostack:
 # PCGR
 #
 pcgr:
+    # Configurable settings
     mount: /mnt/work
-    execution_id: noexecidfound
-    input_vcf: novcffound 
-    s3_vcf_bucket: umccr-pcgr
+    s3_vcf_bucket: pcgr
 
     ## DataBundle download sources per version
     #release: v0.3.4

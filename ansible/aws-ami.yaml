@@ -1,0 +1,70 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Launch EC2 instance
+      ec2:
+         group: "{{ aws.security_group }}"
+         instance_type: "{{ aws.instance_type }}"
+         instance_profile_name: "{{ aws.instance_profile_name }}"
+         instance_tags:
+             Name: pcgr "{{ pcgr.release }}"
+             name: pcgr
+         #spot_price: "{{ aws.spot_price }}"
+         user_data: "{{ lookup('file', 'files/user-data') }}"
+         image: "{{ aws.base_image }}"
+         keypair: "{{ aws.keypair }}"
+         region: "{{ aws.region }}"
+         zone: "{{ aws.zone }}"
+         wait: yes
+         volumes:
+           - device_name: "{{ aws.volume_device }}"
+             volume_type: gp2
+             volume_size: "{{ aws.volume_size }}"
+             delete_on_termination: true
+         count_tag:
+           name: pcgr
+         exact_count: 1
+      register: ec2
+
+    - name: Add new instance to host group
+      add_host:
+        hostname: "{{ item.public_dns_name }}"
+        groupname: launched
+      with_items: "{{ ec2.instances }}"
+
+    - name: Wait for SSH to come up
+      wait_for:
+        host: "{{ item.public_dns_name }}"
+        port: 22
+        delay: 60
+        timeout: 320
+        state: started
+      with_items: "{{ ec2.instances }}"
+
+- name: Deploy roles on AWS 
+  hosts: launched
+  become: True
+  gather_facts: True
+  roles:
+    - common
+    - databundle
+
+# I refuse to use packer to just AMI package an instance
+- name: Create an AMI out of all deployment
+  hosts: launched
+  gather_facts: True
+  ec2_ami:
+    instance_id: "{{ ec2.instance_id }}"
+    name: "{{ pcgr.release }}"
+    device_mapping:
+     - device_name: /dev/sda1
+       size: 8
+       delete_on_termination: true
+       volume_type: gp2
+     - device_name: "{{ aws.volume_device }}"
+       size: "{{ aws.volume_size }}"
+       delete_on_termination: true
+       volume_type: gp2
+   register: image
