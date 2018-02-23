@@ -15,7 +15,7 @@ aws:
     zone: ap-southeast-2a
     volume_device: /dev/xvdb
     volume_size: 50
-	vcf_bucket: pcgr
+    vcf_bucket: pcgr
 
 # OpenStack
 ostack:
@@ -56,7 +56,7 @@ pcgr:
     #databundle: 'pcgr.databundle.GRCh37.20170810.tgz'
 
     release: v0.5.3
-    docker_release: 0.5.3
+    number_release: 0.5.3
     databundle_url: https://drive.google.com/uc?id=1NSeMWpLVMBcCEDYpOLsuWSnKfZEaamip
     databundle: 'pcgr.databundle.GRCh37.20171117.tgz'
 

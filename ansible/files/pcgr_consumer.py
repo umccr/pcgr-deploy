@@ -73,7 +73,7 @@ def process(sample):
 
     # Format as array for picky subprocess
     str2subpr = cmdline.split(" ")
-    log.debug("Running subprocess.check_call() like so: {cli}".format(cli=str2subpr))
+    log.debug("Running subprocess like so: {cli}".format(cli=str2subpr))
 
     subprocess.check_output(str2subpr)
 
@@ -88,7 +88,7 @@ def untar(sample):
     tar.extractall()
     tar.close()
 
-def upload(sample, bucket):
+def upload(sample):
     log.info("Uploading PCGR outputs tarball to S3 bucket s3://{bucket}".format(bucket=BUCKET))
 
     sample_output = "{sample}-output.tar.gz".format(sample=sample)
@@ -182,7 +182,7 @@ def main():
                 untar(sample_file)
 
                 process(sample_name)
-                upload(sample_name, BUCKET)
+                upload(sample_name)
                 cleanup(sample_name)
 
                 # There might be more samples now that we got to process at least one

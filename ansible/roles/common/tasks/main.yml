@@ -119,12 +119,12 @@
       groups: docker
       append: yes
 
-- name: Pull PCGR docker image for PCGR "{{ pcgr.docker_release }}"
+- name: Pull PCGR docker image for PCGR "{{ pcgr.number_release }}"
   become: true
   docker_image:
     name: sigven/pcgr
     state: present
-    tag: "{{ pcgr.docker_release }}"
+    tag: "{{ pcgr.number_release }}"
 
 - name: Download and unpack PCGR software, release "{{ pcgr.release }}"
   unarchive:
@@ -136,7 +136,7 @@
 - name: Copy the AWS SQS file consumer daemon
   copy:
     src: files/pcgr_consumer.py
-    dest: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
+    dest: "{{ pcgr.mount }}/pcgr-{{ number.release }}/pcgr_consumer.py"
 
 - name: Give "{{ os_user }}" rights to write on "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
   become: true
