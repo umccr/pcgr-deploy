@@ -136,7 +136,7 @@
 - name: Copy the AWS SQS file consumer daemon
   copy:
     src: files/pcgr_consumer.py
-    dest: "{{ pcgr.mount }}/pcgr-{{ number.release }}/pcgr_consumer.py"
+    dest: "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}/pcgr_consumer.py"
 
 - name: Give "{{ os_user }}" rights to write on "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
   become: true
