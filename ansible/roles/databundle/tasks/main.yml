@@ -15,7 +15,7 @@
   unarchive:
     remote_src: yes
     src: "{{ pcgr.mount }}/{{ pcgr.databundle }}"
-    dest: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
+    dest: "{{ pcgr.mount }}/pcgr-{{ number.release }}"
     owner: "{{ os_user }}" 
     group: "{{ os_user }}"
-    creates: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}/data/.vep"
+    creates: "{{ pcgr.mount }}/pcgr-{{ number.release }}/data/.vep"
