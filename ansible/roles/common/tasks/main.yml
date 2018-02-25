@@ -39,7 +39,7 @@
     dev: "{{ item.item }}"
   with_items: "{{ volume_device.results }}"
   when:
-      - not item | skipped
+      - not item is skipped
       - item.stat.exists
 
 - name: Mount local work volume
@@ -50,7 +50,7 @@
     state: mounted
   with_items: "{{ volume_device.results }}"
   when:
-      - not item | skipped
+      - not item is skipped
       - item.stat.exists
 
 # Does not work since the lock file never gets removed, actually
