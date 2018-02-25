@@ -88,7 +88,6 @@
       - python-docker
       - tabix
       - htop
-      - certbot
       - nfs-common
       - python-pip
       - python3-pip
@@ -129,7 +128,7 @@
 - name: Download and unpack PCGR software, release "{{ pcgr.release }}"
   unarchive:
     src: https://github.com/sigven/pcgr/archive/{{ pcgr.release }}.tar.gz
-    creates: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
+    creates: "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}"
     dest: "{{ pcgr.mount }}"
     remote_src: True
 
@@ -138,20 +137,20 @@
     src: files/pcgr_consumer.py
     dest: "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}/pcgr_consumer.py"
 
-- name: Give "{{ os_user }}" rights to write on "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
+- name: Give "{{ os_user }}" rights to write on "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}"
   become: true
   file:
-    path: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
+    path: "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}"
     state: directory
     recurse: yes
     owner: "{{ os_user }}"
     group: "{{ os_user }}"
     mode: 0755
 
-- name: Creating default PCGR output directory on "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}/output"
+- name: Creating default PCGR output directory on "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}/output"
   become: true
   file:
-    path: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}/output"
+    path: "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}/output"
     state: directory
     owner: "{{ os_user }}"
     group: "{{ os_user }}"
@@ -163,7 +162,7 @@
 
 - name: "Symlink latest version to {{ pcgr.mount }}/pcgr"
   file:
-      src: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
+      src: "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}"
       dest: "{{ pcgr.mount }}/pcgr"
       state: link
 
