@@ -120,7 +120,7 @@ def teardown(instance):
     log.info("Shutting down {instance}".format(instance=instance))
 
     # Actually terminate it
-    ec2.terminate_instances(instance)
+    ec2.instances.filter(InstanceIds=[instance]).terminate()
 
 #####
 ## Util functions
@@ -142,7 +142,7 @@ def get_instance_id():
     try:
         conn = http.client.HTTPConnection("169.254.169.254", 80)
         conn.request("GET", "/latest/meta-data/instance-id")
-        instance_id = conn.getresponse().read()
+        instance_id = conn.getresponse().read().decode()
     except TimeoutError:
         log.error("You are not inside an EC2 instance? Instance metadata could not be retrieved")
         sys.exit(-1) # For supervisord (or parent process) monitoring this script in the future
