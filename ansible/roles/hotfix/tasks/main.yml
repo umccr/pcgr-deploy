@@ -2,7 +2,7 @@
 - name: Apply https://github.com/sigven/pcgr/issues/15 hotfix 
   copy:
     src: hotfix/pcgr.py
-    dest: "{{ pcgr.mount }}/{{ pcgr.release }}"
+    dest: "{{ pcgr.mount }}/{{ pcgr.number_release }}"
     mode: 0644
 
 - name: Pull PCGR docker image for PCGR "{{ pcgr.number_release }}"
@@ -10,4 +10,4 @@
   docker_image:
     name: umccr/pcgr
     state: present
-    tag: "{{ pcgr.number_release }}"
+    tag: "latest"

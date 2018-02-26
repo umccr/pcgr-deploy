@@ -13,4 +13,5 @@
   roles:
     - common
     - databundle
+    - hotfix
 #    - hpc

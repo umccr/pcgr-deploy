@@ -79,6 +79,7 @@
     update_cache: yes
   with_items:
       - git
+      - aptitude
       - unzip
       - wget
       - tar
@@ -93,6 +94,13 @@
       - python3-pip
       - python3-venv
 
+# XXX Debian specific, the default pkg does not support this
+- name: Upgrade all the current packages to the latest version
+  apt:
+    name: "*"
+    state: latest
+    autoclean: yes
+
 - name: Make sure vital python packages are installed system-wide
   become: true
   pip:
@@ -101,7 +109,7 @@
   with_items:
       - docker-py
       - toml
-      - boto
+      - boto3
       - awscli
 
 - name: Add SSH keys for UMCCR team

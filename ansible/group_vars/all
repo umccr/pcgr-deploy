@@ -4,7 +4,7 @@ timezone: Australia/Melbourne
 
 #Amazon
 aws:
-    instance_type: m5.xlarge
+    instance_type: m4.large
     instance_profile_name: pcgr
     spot_price: 0.4
     keypair: arteria
