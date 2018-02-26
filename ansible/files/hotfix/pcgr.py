@@ -80,28 +80,28 @@ def read_config_options(configuration_file, pcgr_dir, logger):
    integer_tags = ['n_vcfanno_proc','n_vep_forks','tcga_recurrence','mutsignatures_signature_limit','mutsignatures_mutation_limit']
    string_tags = ['normal_dp_tag','normal_af_tag','tumor_dp_tag','tumor_af_tag','call_conf_tag','mutsignatures_normalization']
    for section in ['tumor_only','allelic_support','mutational_burden','cna','msi','mutational_signatures','other']:
-      if toml_options.has_key(section):
+      if section in toml_options:
          for t in float_tags:
-            if toml_options[section].has_key(t):
+            if t in toml_options[section]:
                if not isinstance(toml_options[section][t],float) and not isinstance(toml_options[section][t],int):
                   err_msg = 'Configuration value ' + str(toml_options[section][t]) + ' for ' + str(t) + ' cannot be parsed properly (expecting float)'
                   pcgr_error_message(err_msg, logger)
                pcgr_config_options[section][t] = toml_options[section][t]
          for t in boolean_tags:
-            if toml_options[section].has_key(t):
+            if t in toml_options[section]:
                if not isinstance(toml_options[section][t],bool):
                   err_msg = 'Configuration value ' + str(toml_options[section][t]) + ' for ' + str(t) + ' cannot be parsed properly (expecting true/false)'
                   pcgr_error_message(err_msg, logger)
                pcgr_config_options[section][t] = int(toml_options[section][t])
          for t in integer_tags:
-            if toml_options[section].has_key(t):
+            if t in toml_options[section]:
                if not isinstance(toml_options[section][t],int):
                   err_msg = 'Configuration value ' + str(toml_options[section][t]) + ' for ' + str(t) + ' cannot be parsed properly (expecting integer)'
                   pcgr_error_message(err_msg, logger)
                pcgr_config_options[section][t] = toml_options[section][t]
          
          for t in string_tags:
-            if toml_options[section].has_key(t):
+            if t in toml_options[section]:
                if not isinstance(toml_options[section][t], str):
                   err_msg = 'Configuration value "' + str(toml_options[section][t]) + '" for ' + str(t) + ' cannot be parsed properly (expecting string)'
                   pcgr_error_message(err_msg, logger)

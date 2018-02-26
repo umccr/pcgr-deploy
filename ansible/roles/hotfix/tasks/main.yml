@@ -3,7 +3,7 @@
   copy:
     src: hotfix/pcgr.py
     dest: "{{ pcgr.mount }}/pcgr/pcgr.py"
-    mode: 0644
+    mode: 0755
 
 - name: Pull PCGR docker image for PCGR "{{ pcgr.number_release }}"
   become: true
