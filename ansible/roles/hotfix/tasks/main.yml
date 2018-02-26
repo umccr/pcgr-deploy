@@ -2,7 +2,7 @@
 - name: Apply https://github.com/sigven/pcgr/issues/15 hotfix 
   copy:
     src: hotfix/pcgr.py
-    dest: "{{ pcgr.mount }}/{{ pcgr.number_release }}"
+    dest: "{{ pcgr.mount }}/pcgr/pcgr.py"
     mode: 0644
 
 - name: Pull PCGR docker image for PCGR "{{ pcgr.number_release }}"
