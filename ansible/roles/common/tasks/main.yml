@@ -95,7 +95,7 @@
       - python3-venv
 
 # XXX Debian specific, the default pkg does not support this
-- name: Upgrade all the current packages to the latest version
+- name: Upgrade all packages to the latest version
   apt:
     name: "*"
     state: latest
@@ -106,6 +106,7 @@
   pip:
     name: "{{ item }}"
     virtualenv: "/mnt/work/pcgr-{{ pcgr.number_release }}/venv"
+    virtualenv_command: /usr/bin/python3 -m venv
     state: latest
   with_items:
       - docker-py
