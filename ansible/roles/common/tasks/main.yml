@@ -101,11 +101,12 @@
     state: latest
     autoclean: yes
 
-- name: Make sure vital python packages are installed system-wide
+- name: Make sure vital python packages are installed on a python3 venv
   become: true
   pip:
     name: "{{ item }}"
-    state: latest 
+    virtualenv: "/mnt/work/pcgr-{{ pcgr.number_release }}/venv"
+    state: latest
   with_items:
       - docker-py
       - toml

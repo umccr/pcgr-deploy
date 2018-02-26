@@ -64,14 +64,14 @@ def read_config_options(configuration_file, pcgr_dir, logger):
       pcgr_error_message(err_msg,logger)
    try:
       pcgr_config_options = toml.load(pcgr_configuration_file_default)
-   except IndexError,TypeError:
+   except(IndexError,TypeError):
       err_msg = 'Configuration file ' + str(configuration_file) + ' is not formatted correctly'
       pcgr_error_message(err_msg, logger)
 
    ## override with options set by the users
    try:
       toml_options = toml.load(configuration_file)
-   except IndexError,TypeError:
+   except(IndexError,TypeError):
       err_msg = 'Configuration file ' + str(configuration_file) + ' is not formatted correctly'
       pcgr_error_message(err_msg, logger)
    
@@ -102,7 +102,7 @@ def read_config_options(configuration_file, pcgr_dir, logger):
          
          for t in string_tags:
             if toml_options[section].has_key(t):
-               if not isinstance(toml_options[section][t],basestring):
+               if not isinstance(toml_options[section][t], str):
                   err_msg = 'Configuration value "' + str(toml_options[section][t]) + '" for ' + str(t) + ' cannot be parsed properly (expecting string)'
                   pcgr_error_message(err_msg, logger)
                normalization_options = ['default','exome','genome','exome2genome']
@@ -290,9 +290,9 @@ def check_subprocess(command):
    try:
       output = subprocess.check_output(str(command), stderr=subprocess.STDOUT, shell=True)
       if len(output) > 0:
-         print str(output).rstrip()
+         print(str(output).rstrip())
    except subprocess.CalledProcessError as e:
-      print e.output
+      print(e.output)
       exit(0)
 
 def getlogger(logger_name):
@@ -394,7 +394,7 @@ def run_pcgr(host_directories, docker_image_version, config_options, sample_id, 
       vep_tabix_command = str(docker_command_run1) + "tabix -f -p vcf " + str(vep_vcf) + ".gz" + "\""
       logger = getlogger('pcgr-vep')
    
-      print
+      print()
       logger.info("STEP 1: Basic variant annotation with Variant Effect Predictor (v90, GENCODE v27, GRCh37)")
       check_subprocess(vep_main_command)
       check_subprocess(vep_sed_command)
@@ -403,7 +403,7 @@ def run_pcgr(host_directories, docker_image_version, config_options, sample_id, 
       logger.info("Finished")
    
       ## vcfanno command
-      print
+      print()
       logger = getlogger('pcgr-vcfanno')
       logger.info("STEP 2: Annotation for precision oncology with pcgr-vcfanno (ClinVar, dbSNP, dbNSFP, UniProtKB, cancerhotspots.org, CiVIC, CBMDB, DoCM, TCGA, IntoGen_drivers)")
       pcgr_vcfanno_command = str(docker_command_run2) + "pcgr_vcfanno.py --num_processes "  + str(config_options['other']['n_vcfanno_proc']) + " --dbsnp --dbnsfp --docm --clinvar --civic --cbmdb --intogen_driver_mut --tcga --uniprot --cancer_hotspots --pcgr_onco_xref " + str(vep_vcf) + ".gz " + str(vep_vcfanno_vcf) + " /data\""
@@ -411,7 +411,7 @@ def run_pcgr(host_directories, docker_image_version, config_options, sample_id, 
       logger.info("Finished")
    
       ## summarise command
-      print
+      print()
       logger = getlogger("pcgr-summarise")
       pcgr_summarise_command = str(docker_command_run2) + "pcgr_summarise.py " + str(vep_vcfanno_vcf) + ".gz /data\""
       logger.info("STEP 3: Cancer gene annotations with pcgr-summarise")
@@ -430,7 +430,7 @@ def run_pcgr(host_directories, docker_image_version, config_options, sample_id, 
       check_subprocess(clean_command)
       #return
   
-   print
+   print()
    
    ## Generation of HTML reports for VEP/vcfanno-annotated VCF and copy number segment file
    logger = getlogger('pcgr-writer')
