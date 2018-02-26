@@ -1,31 +1,30 @@
 #!/usr/bin/env python3
 # Example usage: ./pcgr_consumer.py pcgr ap-southeast-2 pcgr 10 10
 
-from os import unlink
-from os.path import splitext
+import os
 import sys
 import gzip
 import shutil
 import tarfile
+import pathlib
 import subprocess
 import http.client
-from itertools import zip_longest
 
 import boto3
 from botocore.exceptions import ClientError
 
-
 import logging
+# Logging boilerplate
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
 
-# Logging boilerplate
 ch = logging.StreamHandler(sys.stdout)
 ch.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 log.addHandler(ch)
 
+# Daemon arguments
 BUCKET=sys.argv[1]
 REGION=sys.argv[2]
 QUEUE=sys.argv[3]
@@ -44,38 +43,42 @@ try:
     queue = sqs.get_queue_by_name(QueueName=QUEUE)
 except:
     queue = sqs.create_queue(QueueName=QUEUE, Attributes={'DelaySeconds': 5})
-    queue = sqs.get_queue_by_name(QueueName=QUEUE)
 
 
 
 def process(sample):
-    cmdline = "pcgr.py --input_vcf {vcf}.vcf.gz {somatic_flags} . {output_dir}-output {conf}.toml {sample} >& {log}.log"
+    somatic_flags = None
+    output_dir = "{}-output".format(sample)
+
+    log.info("Output dir for processing is: {}".format(output_dir))
+    os.mkdir(output_dir)
+
+    cmdline = "/mnt/work/pcgr/pcgr.py --force_overwrite --input_vcf {vcf}.vcf.gz {somatic_flags} /mnt/work/pcgr {output} {conf}.toml {sample}"
 
     if "-somatic" in sample:
         cmdline = cmdline.format(vcf=sample,
-                                output_dir=sample,
                                 conf=sample,
+                                output=output_dir,
                                 sample=sample,
-                                log=sample,
                                 somatic_flags="--input_cna {}.tsv".format(sample))
 
         log.info("Processing somatic sample {sample} with commandline {cli}".format(sample=sample, cli=cmdline))
 
     elif "-germline" in sample:
         cmdline = cmdline.format(vcf=sample,
-                                output_dir=sample,
                                 conf=sample,
+                                output=output_dir,
                                 sample=sample,
-                                log=sample,
                                 somatic_flags='')
 
         log.info("Processing germline sample {sample} with commandline: {cli}".format(sample=sample, cli=cmdline))
 
     # Format as array for picky subprocess
     str2subpr = cmdline.split(" ")
-    log.debug("Running subprocess like so: {cli}".format(cli=str2subpr))
+    str2subpr = list(filter(None, str2subpr)) # Remove empty strings from list
+    log.debug("Running PCGR with command line: {cli}".format(cli=str2subpr))
 
-    subprocess.check_output(str2subpr)
+    log.info(subprocess.check_output(str2subpr))
 
 
 def fetch(sample):
@@ -93,29 +96,22 @@ def upload(sample):
 
     sample_output = "{sample}-output.tar.gz".format(sample=sample)
 
-    try:
-        tar = tarfile.open(sample_output, "w")
-        for name in zip_longest([sample], exts, fillvalue=sample):
-            log.info("Tarring up {fname}".format(fname="{}{}".format(name[0], name[1])))
-            tar.add("{}{}".format(name[0], name[1]))
-        tar.close()
-    except FileNotFoundError:
-        pass # Just the .tsv not found for germline
+    tar = tarfile.open(sample_output, "w")
+    outputs = pathlib.Path(os.environ['HOME']).glob('*-output/*')
+    for fname in outputs:
+        log.info("Tarring up {fname}".format(fname=fname))
+        tar.add("{fname}".format(fname=fname))
+    tar.close()
 
     s3.meta.client.upload_file(sample_output, BUCKET, sample_output)
     
 def cleanup(sample):
     log.info("Cleaning up for next run (if any)...")
-    
-    try:
-        for ext in exts:
-            unlink("{sample}{ext}".format(sample=sample, ext=ext))
-        
-        # Cleanup output files and tabix indexes too
-        unlink("{sample}-output.tar.gz".format(sample=sample))
-        unlink("{sample}.vcf.gz.tbi".format(sample=sample))
-    except FileNotFoundError:
-         pass # Just the .tsv not found for germline or just removed earlier by some other process
+    # Remove output dir and original files
+    shutil.rmtree("{}-output".format(sample))
+    sample_files = pathlib.Path(os.environ['HOME']).glob('{sample}*.*'.format(sample=sample))
+    for fname in sample_files:
+        os.unlink(fname)
         
     
 def teardown(instance):
@@ -131,9 +127,9 @@ def teardown(instance):
 def splitext_plus(fname):
     """Split on file extensions, allowing for zipped extensions.
     """
-    base, ext = splitext(fname)
+    base, ext = os.path.splitext(fname)
     if ext in [".gz", ".bz2", ".zip"]:
-        base, ext2 = splitext(base)
+        base, ext2 = os.path.splitext(base)
         ext = ext2 + ext
     return base, ext
 
