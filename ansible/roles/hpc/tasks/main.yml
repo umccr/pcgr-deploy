@@ -16,10 +16,3 @@
     fstype: nfs
     opts: hard,fg,defaults,nosuid,exec,ro,noatime,intr,rsize=32768,wsize=32768
     state: mounted
-
-- name: Restore PCGR datapack from HPC filesystem
-  unarchive:
-    src: "{{ pcgr.mount }}/data/PCGR/{{ pcgr_databundle }}"
-    dest: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}"
-    creates: "{{ pcgr.mount }}/pcgr-{{ pcgr.release }}/data/.vep"
-    remote_src: yes
