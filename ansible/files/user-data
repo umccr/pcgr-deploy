@@ -1,5 +1,6 @@
 #!/bin/sh
 
+sudo mount /dev/xvdb /mnt/work
 sudo mount -o remount,ro /dev/xvdb /mnt/work/ # XXX: parametrize devname for openstack?
 
 . /mnt/work/pcgr/venv/bin/activate
