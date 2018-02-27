@@ -185,7 +185,11 @@
     group: root
     mode: 0600
 
-# XXX: systemctl daemon-reload
+- name: Force systemd to reread configs
+  systemd: daemon_reload=yes
+
+- name: Make sure a service is running
+  systemd: state=started name=pcgr
 
 - name: Setup local firewall
   ufw:
