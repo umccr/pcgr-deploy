@@ -176,6 +176,17 @@
       dest: "{{ pcgr.mount }}/pcgr"
       state: link
 
+- name: "Setup systemd service file for PCGR consumer"
+  become: true
+  template:
+    src: files/pcgr.service.j2
+    dest: /etc/systemd/system/pcgr.service
+    owner: root
+    group: root
+    mode: 0600
+    validate: sudo systemctl --system daemon-reload
+    backup: no
+
 - name: Setup local firewall
   ufw:
     state: enabled

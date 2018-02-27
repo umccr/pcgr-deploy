@@ -1,0 +1,11 @@
+[Unit]
+Description=PCGR sample consumer process
+After=network-online.target
+
+[Service]
+Type=simple
+User=%i
+ExecStart={{ pcgr.mount }}/pcgr/env/bin/python {{ pcgr.mount }}/pcgr/pcgr_consumer.py
+
+[Install]
+WantedBy=multi-user.target
