@@ -1,4 +1,0 @@
-#!/bin/sh
-
-mount /dev/xvdb /mnt/work
-mount -o remount,ro /dev/xvdb /mnt/work/ # XXX: parametrize devname for openstack?

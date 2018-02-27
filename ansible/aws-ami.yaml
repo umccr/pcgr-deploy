@@ -12,7 +12,6 @@
              Name: pcgr "{{ pcgr.release }}"
              name: pcgr
          #spot_price: "{{ aws.spot_price }}"
-         user_data: "{{ lookup('file', 'files/user-data') }}"
          image: "{{ aws.base_image }}"
          keypair: "{{ aws.keypair }}"
          region: "{{ aws.region }}"
