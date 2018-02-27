@@ -105,7 +105,7 @@
   become: true
   pip:
     name: "{{ item }}"
-    virtualenv: "/mnt/work/pcgr-{{ pcgr.number_release }}/venv"
+    virtualenv: "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}/venv"
     virtualenv_command: /usr/bin/python3 -m venv
     state: latest
   with_items:

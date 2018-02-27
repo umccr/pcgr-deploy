@@ -48,13 +48,12 @@ except:
 
 
 def process(sample):
-    somatic_flags = None
     output_dir = "{}-output".format(sample)
 
     log.info("Output dir for processing is: {}".format(output_dir))
     os.mkdir(output_dir)
 
-    cmdline = "/mnt/work/pcgr/pcgr.py --force_overwrite --input_vcf {vcf}.vcf.gz {somatic_flags} /mnt/work/pcgr {output} {conf}.toml {sample}"
+    cmdline = "/mnt/pcgr/pcgr.py --force_overwrite --input_vcf {vcf}.vcf.gz {somatic_flags} /mnt/pcgr {output} {conf}.toml {sample}"
 
     if "-somatic" in sample:
         cmdline = cmdline.format(vcf=sample,

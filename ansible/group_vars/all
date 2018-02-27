@@ -35,7 +35,7 @@ ostack:
 #
 pcgr:
     # Configurable settings
-    mount: /mnt/work
+    mount: /mnt
     s3_vcf_bucket: pcgr
 
     ## DataBundle download sources per version
@@ -59,6 +59,3 @@ pcgr:
     number_release: 0.5.3
     databundle_url: https://drive.google.com/uc?id=1NSeMWpLVMBcCEDYpOLsuWSnKfZEaamip
     databundle: 'pcgr.databundle.GRCh37.20171117.tgz'
-
-    # HPC specific
-    hpc_mount: "/mnt/work/raijin"
