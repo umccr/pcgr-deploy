@@ -4,7 +4,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory= {{ os.user }}
+WorkingDirectory= {{ os_user }}
 EnvironmentFile= {{ pcgr.mount }}/pcgr/venv/bin/activate
 ExecStart= /bin/sh -c '{{ pcgr.mount }}/pcgr/venv/bin/python3 {{ pcgr.mount }}/pcgr/pcgr_consumer.py pcgr ap-southeast-2 pcgr 10 10 /home/ubuntu'
 
