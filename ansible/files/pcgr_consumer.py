@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Example usage: ./pcgr_consumer.py pcgr ap-southeast-2 pcgr 10 10
+# Example usage: ./pcgr_consumer.py pcgr ap-southeast-2 pcgr 10 10 /home/ubuntu
 
 import os
 import sys
@@ -30,6 +30,7 @@ REGION=sys.argv[2]
 QUEUE=sys.argv[3]
 QUEUE_WAITTIME=int(sys.argv[4]) # in seconds
 MAX_RETRIES=int(sys.argv[5])
+OUTPUTS=sys.argv[6]
 
 ec2 = boto3.resource('ec2', region_name=REGION)
 s3 = boto3.resource('s3', region_name=REGION)
@@ -97,7 +98,7 @@ def upload(sample):
     sample_output = "{sample}-output.tar.gz".format(sample=sample)
 
     tar = tarfile.open(sample_output, "w")
-    outputs = pathlib.Path(os.environ['HOME']).glob('*-output/*')
+    outputs = pathlib.Path(OUTPUTS).glob('*-output/*')
     for fname in outputs:
         log.info("Tarring up {fname}".format(fname=fname))
         tar.add("{fname}".format(fname=fname))
@@ -109,8 +110,8 @@ def cleanup(sample):
     log.info("Cleaning up for next run (if any)...")
     # Remove output dir and original files
     shutil.rmtree("{}-output".format(sample))
-    sample_files = pathlib.Path(os.environ['HOME']).glob('{sample}*.*'.format(sample=sample))
-    for fname in sample_files:
+    outputs = pathlib.Path(OUTPUTS).glob('{sample}*.*'.format(sample=sample))
+    for fname in outputs:
         os.unlink(fname)
         
     
