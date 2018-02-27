@@ -4,8 +4,8 @@ After=network-online.target
 
 [Service]
 Type=simple
-User=%i
-ExecStart={{ pcgr.mount }}/pcgr/env/bin/python {{ pcgr.mount }}/pcgr/pcgr_consumer.py
+WorkingDirectory= {{ os.user }}
+ExecStart= {{ pcgr.mount }}/pcgr/venv/bin/python3 {{ pcgr.mount }}/pcgr/pcgr_consumer.py pcgr ap-southeast-2 pcgr 10 10 /home/ubuntu
 
 [Install]
 WantedBy=multi-user.target

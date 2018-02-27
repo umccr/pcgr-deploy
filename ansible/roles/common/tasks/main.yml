@@ -184,8 +184,8 @@
     owner: root
     group: root
     mode: 0600
-    validate: sudo systemctl --system daemon-reload
-    backup: no
+
+# XXX: systemctl daemon-reload
 
 - name: Setup local firewall
   ufw:
