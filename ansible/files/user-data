@@ -4,6 +4,6 @@ sudo mkdir -p /mnt/work
 sudo mount -o remount,ro /dev/xvdb /mnt/work/ # XXX: parametrize devname for openstack?
 #sudo mount -o ro /dev/xvdb /mnt/work
 
-source /mnt/work/pcgr/venv/bin/activate
+. /mnt/work/pcgr/venv/bin/activate
 cd $HOME
 python3 /mnt/work/pcgr/pcgr_consumer.py pcgr ap-southeast-2 pcgr 10 10 &
