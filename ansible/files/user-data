@@ -1,8 +1,4 @@
 #!/bin/sh
 
-sudo mount /dev/xvdb /mnt/work
-sudo mount -o remount,ro /dev/xvdb /mnt/work/ # XXX: parametrize devname for openstack?
-
-. /mnt/work/pcgr/venv/bin/activate
-cd $HOME
-python3 /mnt/work/pcgr/pcgr_consumer.py pcgr ap-southeast-2 pcgr 10 10 /home/ubuntu &
+mount /dev/xvdb /mnt/work
+mount -o remount,ro /dev/xvdb /mnt/work/ # XXX: parametrize devname for openstack?
