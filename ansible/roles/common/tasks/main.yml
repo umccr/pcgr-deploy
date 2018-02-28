@@ -185,11 +185,12 @@
     group: root
     mode: 0600
 
-- name: Force systemd to reread configs
-  systemd: daemon_reload=yes
-
-- name: Make sure a service is running
-  systemd: state=started name=pcgr
+- name: Force systemd to reread configs and start PCGR consumer on boot
+  systemd:
+    daemon_reload: yes
+    state: started
+    name: pcgr
+    enabled: yes
 
 - name: Setup local firewall
   ufw:
