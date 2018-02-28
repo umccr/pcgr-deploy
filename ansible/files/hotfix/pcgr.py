@@ -106,10 +106,10 @@ def read_config_options(configuration_file, pcgr_dir, logger):
                   err_msg = 'Configuration value "' + str(toml_options[section][t]) + '" for ' + str(t) + ' cannot be parsed properly (expecting string)'
                   pcgr_error_message(err_msg, logger)
                normalization_options = ['default','exome','genome','exome2genome']
-               if t == 'mutsignatures_normalization' and not str(toml_options[section][t]).encode('utf-8') in normalization_options:
+               if t == 'mutsignatures_normalization' and not str(toml_options[section][t]) in normalization_options:
                   err_msg = 'Configuration value ' + str(toml_options[section][t]) + ' for ' + str(t) + ' cannot be parsed properly (expecting \'default\', \'exome\', \'genome\', or \'exome2genome\')'
                   pcgr_error_message(err_msg, logger)
-               pcgr_config_options[section][t] = str(toml_options[section][t]).encode('utf-8')
+               pcgr_config_options[section][t] = str(toml_options[section][t])
    
    ## check that msig_n is greater than zero and less than 30
    if pcgr_config_options['mutational_signatures']['mutsignatures_signature_limit'] < 0 or pcgr_config_options['mutational_signatures']['mutsignatures_signature_limit'] > 30:
