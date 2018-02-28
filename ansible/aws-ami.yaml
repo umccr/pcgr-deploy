@@ -48,8 +48,8 @@
   gather_facts: True
   roles:
     - common
-    - hotfix
     - databundle
+    - hotfix
 
 # I refuse to use packer to just AMI package an instance
 # - name: Create an AMI out of all deployment

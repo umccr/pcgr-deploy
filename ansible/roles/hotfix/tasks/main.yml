@@ -5,7 +5,7 @@
     dest: "{{ pcgr.mount }}/pcgr/pcgr.py"
     mode: 0755
 
-- name: Pull PCGR docker image for PCGR "{{ pcgr.number_release }}"
+- name: Pull PCGR UMMCR-hotfixed docker image for PCGR "{{ pcgr.number_release }}"
   become: true
   docker_image:
     name: umccr/pcgr
