@@ -18,11 +18,14 @@ import logging
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
 
+# To console
 ch = logging.StreamHandler(sys.stdout)
 ch.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 log.addHandler(ch)
+
+# To file
 
 # Daemon arguments
 BUCKET=sys.argv[1]
@@ -36,8 +39,6 @@ ec2 = boto3.resource('ec2', region_name=REGION)
 s3 = boto3.resource('s3', region_name=REGION)
 sqs = boto3.resource('sqs', region_name=REGION)
 
-# File extensions we care for
-exts = [".tsv", ".log", ".tar.gz", ".vcf.gz", ".tbi", ".toml"]
 
 # Create SQS queue if not found
 try:
@@ -174,6 +175,7 @@ def main():
             sample_name = splitext_plus(sample_file)[0] # get rid of .tar.gz extension
             
             try:
+                os.chdir(OUTPUTS)
                 fetch(sample_file)
                 untar(sample_file)
 
