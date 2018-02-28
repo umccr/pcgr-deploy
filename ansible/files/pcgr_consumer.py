@@ -96,7 +96,7 @@ def upload(sample):
     sample_output = "{sample}-output.tar.gz".format(sample=sample)
 
     tar = tarfile.open(sample_output, "w")
-    outputs = pathlib.Path(OUTPUTS).glob('*-output/*')
+    outputs = pathlib.Path(OUTPUTS).glob('{sample}-output/*'.format(sample=sample))
     for fname in outputs:
         log.info("Tarring up {fname}".format(fname=fname))
         tar.add("{fname}".format(fname=fname))
