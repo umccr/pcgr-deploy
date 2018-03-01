@@ -98,21 +98,23 @@ def upload(sample, log_fh):
     log.info("Tarring and uploading PCGR outputs tarball to S3 on bucket s3://{bucket}".format(bucket=BUCKET))
 
     sample_output = "{}-output.tar.gz".format(sample)
-    output_dir = "/{}/{}-output".format(OUTPUTS, sample)
-    logfile = "{}/{}.log".format(OUTPUTS, sample)
+    output_dir = "{}/{}-output".format(OUTPUTS, sample)
+    logfile = "{}.log".format(sample)
 
-    with chdir(pathlib.Path(output_dir)):
-        with tarfile.open(sample_output, "w:gz") as tar:
-            outputs = pathlib.Path(output_dir).glob('*.*')
-            for fname in outputs:
-                log.info("Tarring up {}".format(fname))
-                tar.add("{}".format(fname.replace(OUTPUTS, '')))
+    with tarfile.open(sample_output, "w:gz") as tar:
+        # XXX: fix this ugly path manipulation and use pathlib
+        outputs = pathlib.Path(output_dir).glob('*')
 
-        # Free up the log handler for next sample
+        for fname in outputs:
+            fname = str(fname).replace("{}/".format(OUTPUTS), '')
+            print("Tarring up {}".format(fname))
+            tar.add("{}".format(fname))
+
+        # Tar and free up the log handler for the next sample
+        tar.add(logfile)
         log.removeHandler(log_fh)
-        shutil.copy2(logfile, output_dir)
 
-        s3.meta.client.upload_file(sample_output, BUCKET, sample_output)
+    s3.meta.client.upload_file(sample_output, BUCKET, sample_output)
 
 def cleanup(sample):
     log.info("Cleaning up for next run (if any)...")
