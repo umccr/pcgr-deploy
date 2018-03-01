@@ -97,7 +97,7 @@ def upload(sample, log_fh):
     output_dir = "{}/{}-output".format(OUTPUTS, sample)
     logfile = "{}/{}.log".format(OUTPUTS, sample)
 
-    with chdir(output_dir):
+    with chdir(pathlib.Path(output_dir)):
         with tarfile.open(sample_output, "w:gz") as tar:
             outputs = pathlib.Path(OUTPUTS).glob('*')
             for fname in outputs:
@@ -156,6 +156,8 @@ def get_instance_id():
 
 @contextmanager
 def chdir(path):
+    """ path: pathlib.Path() object
+    """
     pwd = str(pathlib.Path().absolute())
     if not path.is_dir():
         path = path.parent
