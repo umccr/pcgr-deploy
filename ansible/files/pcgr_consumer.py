@@ -50,8 +50,12 @@ except:
 def process(sample):
     output_dir = "{}-output".format(sample)
 
-    log.info("Output dir for processing is: {}".format(output_dir))
-    os.mkdir(output_dir)
+    try:
+        log.info("Output dir for processing is: {}".format(output_dir))
+        os.mkdir(output_dir)
+    except FileExistsError:
+        cleanup(sample)
+        os.mkdir(output_dir)
 
     cmdline = "/mnt/pcgr/pcgr.py --force_overwrite --input_vcf {vcf}.vcf.gz {somatic_flags} /mnt/pcgr {output} {conf}.toml {sample}"
 
