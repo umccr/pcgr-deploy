@@ -98,15 +98,15 @@ def upload(sample, log_fh):
     log.info("Tarring and uploading PCGR outputs tarball to S3 on bucket s3://{bucket}".format(bucket=BUCKET))
 
     sample_output = "{}-output.tar.gz".format(sample)
-    output_dir = "{}/{}-output".format(OUTPUTS, sample)
+    output_dir = "/{}/{}-output".format(OUTPUTS, sample)
     logfile = "{}/{}.log".format(OUTPUTS, sample)
 
     with chdir(pathlib.Path(output_dir)):
         with tarfile.open(sample_output, "w:gz") as tar:
-            outputs = pathlib.Path(OUTPUTS).glob('*')
+            outputs = pathlib.Path(output_dir).glob('*.*')
             for fname in outputs:
                 log.info("Tarring up {}".format(fname))
-                tar.add("{}".format(fname))
+                tar.add("{}".format(fname.replace(OUTPUTS, '')))
 
         # Free up the log handler for next sample
         log.removeHandler(log_fh)
