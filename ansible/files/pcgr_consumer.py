@@ -8,6 +8,7 @@ import shutil
 import tarfile
 import pathlib
 import subprocess
+from contextlib import contextmanager
 import http.client
 
 import boto3
@@ -92,19 +93,20 @@ def untar(sample):
 def upload(sample, log_fh):
     log.info("Tarring and uploading PCGR outputs tarball to S3 on bucket s3://{bucket}".format(bucket=BUCKET))
 
-    sample_output = "{sample}-output.tar.gz".format(sample=sample)
+    sample_output = "{}-output.tar.gz".format(sample)
+    output_dir = "{}/{}-output".format(OUTPUTS, sample)
+    logfile = "{}/{}.log".format(OUTPUTS, sample)
 
-    with os.chdir("{out}/{sample}-output".format(OUTPUTS, sample)):
+    with chdir(output_dir):
         with tarfile.open(sample_output, "w:gz") as tar:
             outputs = pathlib.Path(OUTPUTS).glob('*')
             for fname in outputs:
-                log.info("Tarring up {fname}".format(fname=fname))
-                tar.add("{fname}".format(fname=fname))
+                log.info("Tarring up {}".format(fname))
+                tar.add("{}".format(fname))
 
         # Free up the log handler for next sample
         log.removeHandler(log_fh)
-        shutil.copy2("{out}/{sample}.log".format(out=OUTPUTS, sample=sample), 
-                     "{out}/{sample}-output".format(out=OUTPUTS, sample=sample))
+        shutil.copy2(logfile, output_dir)
 
         s3.meta.client.upload_file(sample_output, BUCKET, sample_output)
 
@@ -152,6 +154,14 @@ def get_instance_id():
     
     return instance_id
 
+@contextmanager
+def chdir(path):
+    pwd = str(pathlib.Path().absolute())
+    if not path.is_dir():
+        path = path.parent
+    os.chdir(str(path))
+    yield path.absolute()
+    os.chdir(pwd)
 
 def main():
     retries = MAX_RETRIES
@@ -185,8 +195,6 @@ def main():
 
                 process(sample_name)
                 upload(sample_name, fh)
-
-
 
                 cleanup(sample_name)
 
