@@ -86,24 +86,28 @@ def fetch(sample):
 
 def untar(sample):
     log.info("Unpacking PCGR input sample {sample}".format(sample=sample))
-    tar = tarfile.open(sample)
-    tar.extractall()
-    tar.close()
+    with tarfile.open(sample) as tar:
+        tar.extractall()
 
-def upload(sample):
-    log.info("Uploading PCGR outputs tarball to S3 bucket s3://{bucket}".format(bucket=BUCKET))
+def upload(sample, log_fh):
+    log.info("Tarring and uploading PCGR outputs tarball to S3 on bucket s3://{bucket}".format(bucket=BUCKET))
 
     sample_output = "{sample}-output.tar.gz".format(sample=sample)
 
-    tar = tarfile.open(sample_output, "w")
-    outputs = pathlib.Path(OUTPUTS).glob('{sample}-output/*'.format(sample=sample))
-    for fname in outputs:
-        log.info("Tarring up {fname}".format(fname=fname))
-        tar.add("{fname}".format(fname=fname))
-    tar.close()
+    with os.chdir("{out}/{sample}-output".format(OUTPUTS, sample)):
+        with tarfile.open(sample_output, "w:gz") as tar:
+            outputs = pathlib.Path(OUTPUTS).glob('*')
+            for fname in outputs:
+                log.info("Tarring up {fname}".format(fname=fname))
+                tar.add("{fname}".format(fname=fname))
 
-    s3.meta.client.upload_file(sample_output, BUCKET, sample_output)
-    
+        # Free up the log handler for next sample
+        log.removeHandler(log_fh)
+        shutil.copy2("{out}/{sample}.log".format(out=OUTPUTS, sample=sample), 
+                     "{out}/{sample}-output".format(out=OUTPUTS, sample=sample))
+
+        s3.meta.client.upload_file(sample_output, BUCKET, sample_output)
+
 def cleanup(sample):
     log.info("Cleaning up for next run (if any)...")
     # Remove output dir and original files
@@ -148,11 +152,6 @@ def get_instance_id():
     
     return instance_id
 
-def compress(fname):
-    with open(fname, 'rb') as f_in:
-        with gzip.open("{}.gz".format(fname), 'wb') as f_out:
-            shutil.copyfileobj(f_in, f_out)
-
 
 def main():
     retries = MAX_RETRIES
@@ -185,7 +184,10 @@ def main():
                 untar(sample_file)
 
                 process(sample_name)
-                upload(sample_name)
+                upload(sample_name, fh)
+
+
+
                 cleanup(sample_name)
 
                 # There might be more samples now that we got to process at least one
@@ -193,12 +195,9 @@ def main():
             except ClientError as e:
                 print("Unexpected error: {}".format(e))
 
-
             log.info("[Main] Sample {sample} processed, deleting from queue".format(sample=sample_file))
             message.delete()
 
-            # Free up the log handler for next sample
-            log.removeHandler(fh)
 
 if __name__ == "__main__":
     main()
