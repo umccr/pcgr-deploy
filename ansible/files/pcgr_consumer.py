@@ -191,7 +191,7 @@ def main():
             os.chdir(OUTPUTS)
 
             # Log to individual file
-            fh = logging.FileHandler("{}.log".format(sample_file))
+            fh = logging.FileHandler("{}.log".format(sample_name))
             fh.setLevel(logging.INFO)
             log.addHandler(fh)
             
