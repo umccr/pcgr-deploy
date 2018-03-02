@@ -8,7 +8,7 @@ aws:
     instance_profile_name: pcgr
     spot_price: 0.4
     keypair: arteria
-    image_id: ami-044866c2c99f0b32c # PCGR v0.5.3, for deployment
+    image_id: ami-0912be20bab304210 # PCGR v0.5.3, for deployment
     base_image: ami-78ac551a # For new AMIs/releases
     security_group: default
     region: ap-southeast-2
