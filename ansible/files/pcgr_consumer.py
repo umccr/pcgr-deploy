@@ -57,23 +57,23 @@ def process(sample):
         cleanup(sample)
         os.mkdir(output_dir)
 
-    cmdline = "/mnt/pcgr/pcgr.py --force_overwrite --input_vcf {vcf}.vcf.gz {somatic_flags} /mnt/pcgr {output} {conf}.toml {sample}"
+    cmdline = "/mnt/pcgr/pcgr.py --force_overwrite --input_vcf {vcf}.vcf.gz {normal_flags} /mnt/pcgr {output} {conf}.toml {sample}"
 
-    if "-somatic" in sample:
+    if "-normal" in sample:
         cmdline = cmdline.format(vcf=sample,
                                 conf=sample,
                                 output=output_dir,
                                 sample=sample,
-                                somatic_flags="--input_cna {}.tsv".format(sample))
+                                normal_flags="--input_cna {}.tsv".format(sample))
 
-        log.info("Processing somatic sample {sample} with commandline {cli}".format(sample=sample, cli=cmdline))
+        log.info("Processing normal sample {sample} with commandline {cli}".format(sample=sample, cli=cmdline))
 
     elif "-germline" in sample:
         cmdline = cmdline.format(vcf=sample,
                                 conf=sample,
                                 output=output_dir,
                                 sample=sample,
-                                somatic_flags='')
+                                normal_flags='')
 
         log.info("Processing germline sample {sample} with commandline: {cli}".format(sample=sample, cli=cmdline))
 
