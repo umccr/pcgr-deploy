@@ -188,7 +188,7 @@
 - name: Force systemd to reread configs and start PCGR consumer on boot
   systemd:
     daemon_reload: yes
-    state: started
+    state: stopped
     name: pcgr
     enabled: yes
 
