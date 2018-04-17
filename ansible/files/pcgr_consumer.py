@@ -59,7 +59,7 @@ def process(sample):
 
     cmdline = "/mnt/pcgr/pcgr.py --force_overwrite --input_vcf {vcf}.vcf.gz {somatic_flags} /mnt/pcgr {output} {conf}.toml {sample}"
 
-    if "-somatic" in sample:
+    if sample.endswith("-somatic"):
         cmdline = cmdline.format(vcf=sample,
                                 conf=sample,
                                 output=output_dir,
@@ -68,7 +68,7 @@ def process(sample):
 
         log.info("Processing somatic sample {sample} with commandline {cli}".format(sample=sample, cli=cmdline))
 
-    elif "-normal" in sample:
+    elif sample.endswith("-normal"):
         cmdline = cmdline.format(vcf=sample,
                                 conf=sample,
                                 output=output_dir,
