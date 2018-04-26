@@ -6,10 +6,10 @@ timezone: Australia/Melbourne
 aws:
     instance_type: m4.xlarge
     instance_profile_name: pcgr
-    spot_price: 0.4
+    spot_price: 0.9
     keypair: arteria
     image_id: ami-0912be20bab304210 # PCGR v0.5.3, for deployment
-    base_image: ami-78ac551a # For new AMIs/releases
+    base_image: ami-8610dee4 # For new AMIs/releases
     security_group: default
     region: ap-southeast-2
     zone: ap-southeast-2a
@@ -55,7 +55,13 @@ pcgr:
     #databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mY1ZnRzJ2bVVWMTQ
     #databundle: 'pcgr.databundle.GRCh37.20170810.tgz'
 
-    release: v0.5.3
-    number_release: 0.5.3
-    databundle_url: https://drive.google.com/uc?id=1NSeMWpLVMBcCEDYpOLsuWSnKfZEaamip
-    databundle: 'pcgr.databundle.GRCh37.20171117.tgz'
+    #release: v0.5.3
+    #number_release: 0.5.3
+    #databundle_url: https://drive.google.com/uc?id=1NSeMWpLVMBcCEDYpOLsuWSnKfZEaamip
+    #databundle: 'pcgr.databundle.GRCh37.20171117.tgz'
+
+    release: v0.6.0
+    number_release: 0.6.0
+    databundle_url: https://drive.google.com/uc?id=1cKq-rgSNCYPCUJ38pCi_xy6_PJH-FZWD
+    databundle: 'pcgr.databundle.grch38.20180422.tgz'
+ 

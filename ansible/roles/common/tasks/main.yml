@@ -86,20 +86,17 @@
       - gzip
       - bzip2
       - docker.io
-      - python-docker
       - tabix
       - htop
-      - nfs-common
-      - python-pip
-      - python3-pip
+      - python3-docker
       - python3-venv
 
 # XXX Debian specific, the default pkg does not support this
-- name: Upgrade all packages to the latest version
-  apt:
-    name: "*"
-    state: latest
-    autoclean: yes
+#- name: Upgrade all packages to the latest version
+#  apt:
+#    name: "*"
+#    state: latest
+#    autoclean: yes
 
 - name: Make sure vital python packages are installed on a python3 venv
   become: true
@@ -127,6 +124,34 @@
       name: "{{ os_user }}" 
       groups: docker
       append: yes
+
+# XXX: Use ansible handlers for this
+- name: Stop docker daemon
+  systemd:
+    daemon_reload: yes
+    state: stopped
+    name: docker
+    enabled: yes
+
+# XXX: Not idempotent!!
+- name: Move /var/lib/docker to /mnt for space reasons
+  become: true
+  command: mv /var/lib/docker /mnt/docker
+
+- name: Symlink docker
+  become: true
+  file:
+      src: "/mnt/docker"
+      dest: "/var/lib/docker"
+      state: link
+
+# XXX: Use ansible handlers for this
+- name: Start docker daemon
+  systemd:
+    daemon_reload: yes
+    state: started
+    name: docker
+    enabled: yes
 
 - name: Pull PCGR docker image for PCGR "{{ pcgr.number_release }}"
   become: true

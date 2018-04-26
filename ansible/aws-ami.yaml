@@ -2,12 +2,6 @@
 - hosts: localhost
   connection: local
   gather_facts: no
-  pre_tasks:
-   - name: Wait for automatic system updates
-     shell: while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done;
-   - name: Seed ansible on remote instances (no python errors)
-     raw: sudo apt-get -y install python python-simplejson aptitude
-   - action: setup
   tasks:
     - name: Launch EC2 instance
       ec2:
@@ -17,7 +11,7 @@
          instance_tags:
              Name: pcgr "{{ pcgr.release }}"
              name: pcgr
-         #spot_price: "{{ aws.spot_price }}"
+         spot_price: "{{ aws.spot_price }}"
          image: "{{ aws.base_image }}"
          keypair: "{{ aws.keypair }}"
          region: "{{ aws.region }}"
@@ -55,4 +49,3 @@
   roles:
     - common
     - databundle
-    - hotfix

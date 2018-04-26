@@ -20,7 +20,6 @@ The following lines will install the deployment modules, deploy PCGR and run its
 ```
 python3 -m venv venv && source venv/bin/activate && pip install ansible
 ansible-playbook aws.yaml -e 'ansible_python_interpreter=/usr/bin/python3'
-ansible-playbook aws.yaml -e 'ansible_python_interpreter=/usr/bin/python3' --extra-vars='{"instance_tags": { "pcgr_id": "test_tag"}}'
 ssh ubuntu@<AWS INSTANCE>
 cd /mnt/pcgr
 ./pcgr.py --input_vcf examples/tumor_sample.COAD.vcf.gz --input_cna examples/tumor_sample.COAD.cna.tsv /mnt/pcgr-* output tumor_sample.COAD
