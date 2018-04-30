@@ -60,8 +60,8 @@ pcgr:
     #databundle_url: https://drive.google.com/uc?id=1NSeMWpLVMBcCEDYpOLsuWSnKfZEaamip
     #databundle: 'pcgr.databundle.GRCh37.20171117.tgz'
 
-    release: v0.6.0
-    number_release: 0.6.0
+    release: v0.6.1
+    number_release: 0.6.1
     databundle_url: https://drive.google.com/uc?id=1cKq-rgSNCYPCUJ38pCi_xy6_PJH-FZWD
     databundle: 'pcgr.databundle.grch38.20180422.tgz'
  
