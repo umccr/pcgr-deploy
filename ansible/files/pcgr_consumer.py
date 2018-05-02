@@ -43,7 +43,7 @@ sqs = boto3.resource('sqs', region_name=REGION)
 try:
     queue = sqs.get_queue_by_name(QueueName=QUEUE)
 except:
-    queue = sqs.create_queue(QueueName=QUEUE, Attributes={'DelaySeconds': 5})
+    queue = sqs.create_queue(QueueName=QUEUE, Attributes={'DelaySeconds': '5'})
 
 
 
