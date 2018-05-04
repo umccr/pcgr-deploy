@@ -125,27 +125,6 @@
       groups: docker
       append: yes
 
-# XXX: Use ansible handlers for this
-- name: Stop docker daemon
-  systemd:
-    daemon_reload: yes
-    state: stopped
-    name: docker
-    enabled: yes
-
-# XXX: Not idempotent!!
-- name: Move /var/lib/docker to /mnt for space reasons
-  become: true
-  command: mv /var/lib/docker /mnt/docker
-
-- name: Symlink docker
-  become: true
-  file:
-      src: "/mnt/docker"
-      dest: "/var/lib/docker"
-      state: link
-
-# XXX: Use ansible handlers for this
 - name: Start docker daemon
   systemd:
     daemon_reload: yes
@@ -163,7 +142,6 @@
 - name: Download and unpack PCGR software, release "{{ pcgr.release }}"
   unarchive:
     src: https://github.com/sigven/pcgr/archive/{{ pcgr.release }}.tar.gz
-    creates: "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}"
     dest: "{{ pcgr.mount }}"
     remote_src: True
 
