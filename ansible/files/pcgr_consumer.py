@@ -57,13 +57,14 @@ def process(sample):
         cleanup(sample)
         os.mkdir(output_dir)
 
-    cmdline = "/mnt/pcgr/pcgr.py --force_overwrite --input_vcf {vcf}.vcf.gz {somatic_flags} /mnt/pcgr {output} {conf}.toml {sample}"
+    cmdline = "/mnt/pcgr/pcgr.py --force_overwrite --input_vcf {vcf}.vcf.gz {somatic_flags} /mnt/pcgr {output} {genome_assembly} {conf}.toml {sample}"
 
     if sample.endswith("-somatic"):
         cmdline = cmdline.format(vcf=sample,
                                 conf=sample,
                                 output=output_dir,
                                 sample=sample,
+                                genome_assembly="grch37",
                                 somatic_flags="--input_cna {}.tsv".format(sample))
 
         log.info("Processing somatic sample {sample} with commandline {cli}".format(sample=sample, cli=cmdline))
@@ -73,6 +74,7 @@ def process(sample):
                                 conf=sample,
                                 output=output_dir,
                                 sample=sample,
+                                genome_assembly="grch37",
                                 somatic_flags='')
 
         log.info("Processing normal sample {sample} with commandline: {cli}".format(sample=sample, cli=cmdline))
