@@ -5,17 +5,44 @@
     dest: "{{ pcgr.mount }}/gdown.pl"
     mode: 0644
 
-- name: Download PCGRs data pack
-  command: "perl gdown.pl {{ pcgr.databundle_url}} {{ pcgr.mount }}/{{ pcgr.databundle }}"
+# XXX: loop those two
+- name: Download PCGRs data pack for GRCh37
+  command: "perl gdown.pl {{ pcgr.databundle.grch37.url }} {{ pcgr.mount }}/{{ pcgr.databundle.grch37.file }}"
   args:
     chdir: "{{ pcgr.mount }}"
-    creates: "{{ pcgr.mount }}/{{ pcgr.databundle }}"
+    creates: "{{ pcgr.mount }}/{{ pcgr.databundle.grch37.file }}"
 
-- name: Unpack PCGR data pack
+- name: Download PCGRs data pack for GRCh38
+  command: "perl gdown.pl {{ pcgr.databundle.grch38.url }} {{ pcgr.mount }}/{{ pcgr.databundle.grch38.file }}"
+  args:
+    chdir: "{{ pcgr.mount }}"
+    creates: "{{ pcgr.mount }}/{{ pcgr.databundle.grch38.file }}"
+
+
+- name: Unpack PCGR data pack for GRCh37
   unarchive:
     remote_src: yes
     src: "{{ pcgr.mount }}/{{ pcgr.databundle }}"
     dest: "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}"
     owner: "{{ os_user }}" 
     group: "{{ os_user }}"
-    creates: "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}/data/.vep"
+    creates: "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}/data/grch37/.vep"
+
+- name: Clean tarball for GRCh37
+  file:
+    state: absent
+    path: "{{ pcgr.mount }}/{{ pcgr.databundle.grch37.file }}"
+
+- name: Unpack PCGR data pack for GRCh38
+  unarchive:
+    remote_src: yes
+    src: "{{ pcgr.mount }}/{{ pcgr.databundle }}"
+    dest: "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}"
+    owner: "{{ os_user }}" 
+    group: "{{ os_user }}"
+    creates: "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}/data/grch38/.vep"
+
+- name: Clean tarball for GRCh38
+  file:
+    state: absent
+    path: "{{ pcgr.mount }}/{{ pcgr.databundle.grch38.file }}"
