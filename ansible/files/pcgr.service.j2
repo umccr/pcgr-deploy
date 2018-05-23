@@ -6,7 +6,7 @@ After=network-online.target
 Type=simple
 WorkingDirectory= /home/{{ os_user }}
 #EnvironmentFile={{ pcgr.mount }}/pcgr/venv/bin/activate
-ExecStart=/bin/sh -c '. /mnt/pcgr/venv/bin/activate && {{ pcgr.mount }}/pcgr/venv/bin/python3 {{ pcgr.mount }}/pcgr/pcgr_consumer.py pcgr ap-southeast-2 pcgr 10 10 /home/ubuntu'
+ExecStart=/bin/sh -c '. /mnt/pcgr/venv/bin/activate && {{ pcgr.mount }}/pcgr/venv/bin/python3 {{ pcgr.mount }}/pcgr/pcgr_consumer.py {{ vcf_bucket }} ap-southeast-2 pcgr 10 10 /home/ubuntu'
 
 [Install]
 WantedBy=multi-user.target

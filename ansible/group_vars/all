@@ -36,7 +36,6 @@ ostack:
 pcgr:
     # Configurable settings
     mount: /mnt
-    s3_vcf_bucket: pcgr
 
     ## DataBundle download sources per version
     #release: v0.3.4
