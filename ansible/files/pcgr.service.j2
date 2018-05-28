@@ -6,7 +6,10 @@ After=network-online.target
 Type=simple
 WorkingDirectory= /home/{{ os_user }}
 #EnvironmentFile={{ pcgr.mount }}/pcgr/venv/bin/activate
-ExecStart=/bin/sh -c '. /mnt/pcgr/venv/bin/activate && {{ pcgr.mount }}/pcgr/venv/bin/python3 {{ pcgr.mount }}/pcgr/pcgr_consumer.py {{ aws.vcf_bucket }} ap-southeast-2 pcgr 10 10 /home/ubuntu'
+# XXX ExecStart should be implemented like:
+# ExecStart=/bin/sh -c '. /mnt/pcgr/venv/bin/activate && {{ pcgr.mount }}/pcgr/venv/bin/python3 {{ pcgr.mount }}/pcgr/pcgr_consumer.py {{ aws.vcf_bucket }} {{ aws.region }} {{ pcgr.queue }} {{ pcgr.attempts_seconds }} {{ pcgr.idle_seconds }} /home/{{ os_user }}'
+
+ExecStart=/bin/sh -c '. /mnt/pcgr/venv/bin/activate && {{ pcgr.mount }}/pcgr/venv/bin/python3 {{ pcgr.mount }}/pcgr/pcgr_consumer.py {{ aws.vcf_bucket }} ap-southeast-2 pcgr 10 10 /home/{{ os_user }}'
 
 [Install]
 WantedBy=multi-user.target
