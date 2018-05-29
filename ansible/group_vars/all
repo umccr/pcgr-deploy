@@ -69,3 +69,13 @@ pcgr:
         grch37:
             url: https://drive.google.com/uc?id=1tOyPmzgXkSZjPJQOojFQxUP8JlQuQqLq
             file: 'pcgr.databundle.grch37.20180422.tgz'
+
+    release: v0.6.2.1
+    number_release: 0.6.2.1
+    databundle:
+        grch38:
+            url: https://drive.google.com/uc?id=12q3rr7xpdBfaefRi0ysFHbH34kehNZOV
+            file: 'pcgr.databundle.grch38.20180509.tgz'
+        grch37:
+            url: https://drive.google.com/uc?id=1cGBAmAh5t4miIeRrrd0zHsPCFToOr0Lf
+            file: 'pcgr.databundle.grch37.20180509.tgz'
