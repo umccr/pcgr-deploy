@@ -36,7 +36,9 @@ ostack:
 pcgr:
     # Configurable settings
     mount: /mnt
-
+    queue: pcgr
+    retry: 10 # number of times to retry fetching from PCGR's consumer queue
+    idle_seconds: 10 # Number of seconds to wait before self-termination of the instance
     ## DataBundle download sources per version
     #release: v0.3.4
     #databundle_url: https://drive.google.com/uc?id=0B8aYD2TJ472mOXZYbGYzaDE0MEk
