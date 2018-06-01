@@ -7,21 +7,15 @@
       ec2:
          group: "{{ aws.security_group }}"
          instance_type: "{{ aws.instance_type }}"
-         instance_profile_name: "{{ aws.instance_profile_name }}"
+         instance_profile_name: "{{ instance_profile_name }}"
          instance_tags:
              Name: pcgr "{{ pcgr.release }}"
              name: pcgr
-         #spot_price: "{{ aws.spot_price }}"
-         image: "{{ aws.image_id }}"
-         keypair: "{{ aws.keypair }}"
+         spot_price: "{{ aws.spot_price }}"
+         image: "{{ image_id }}"
          region: "{{ aws.region }}"
          zone: "{{ aws.zone }}"
          wait: yes
-         volumes:
-           - device_name: "{{ aws.volume_device }}"
-             volume_type: gp2
-             volume_size: "{{ aws.volume_size }}"
-             delete_on_termination: true
          count_tag:
            name: pcgr
          exact_count: 1
