@@ -11,7 +11,7 @@
   hostname:
     name: localhost
 
-- name: Create "{{ pcgr.mount }}" 
+- name: Create "{{ pcgr.mount }}"
   become: true
   file:
     path: "{{ pcgr.mount }}"
@@ -23,7 +23,7 @@
 
 - name: "Check which of {{ aws.volume_device }} or {{ ostack.volume_device }} we have present"
   stat: path={{ item }}
-  with_items: 
+  with_items:
       - "{{ aws.volume_device }}"
       - "{{ ostack.volume_device }}"
   register: volume_device
@@ -43,10 +43,10 @@
       - item.stat.exists
 
 - name: Mount local work volume
-  mount: 
+  mount:
     path: "{{ pcgr.mount }}"
     src: "{{ item.item }}"
-    fstype: ext4 
+    fstype: ext4
     state: mounted
   with_items: "{{ volume_device.results }}"
   when:
@@ -73,9 +73,9 @@
 - name: Update system and install basics
   become: true
   become_user: root
-  package: 
+  package:
     name: "{{ item }}"
-    state: latest 
+    state: latest
     update_cache: yes
   with_items:
       - git
@@ -132,8 +132,8 @@
 
 - name: Add user to docker group
   become: true
-  user: 
-      name: "{{ os_user }}" 
+  user:
+      name: "{{ os_user }}"
       groups: docker
       append: yes
 
@@ -190,6 +190,11 @@
       src: "{{ pcgr.mount }}/pcgr-{{ pcgr.number_release }}"
       dest: "{{ pcgr.mount }}/pcgr"
       state: link
+
+- name: Copy the systemd env file
+  copy:
+    src: files/pcgr.env
+    dest: "/opt/pcgr.env"
 
 - name: "Setup systemd service file for PCGR consumer"
   become: true
