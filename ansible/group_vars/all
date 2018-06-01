@@ -66,15 +66,15 @@ pcgr:
     #databundle: 'pcgr.databundle.GRCh37.20171117.tgz'
 
     # XXX: First release with two genome assemblies, breaks backward compat on databundle role
-    release: v0.6.1
-    number_release: 0.6.1
-    databundle:
-        grch38: 
-            url: https://drive.google.com/uc?id=1cKq-rgSNCYPCUJ38pCi_xy6_PJH-FZWD
-            file: 'pcgr.databundle.grch38.20180422.tgz' 
-        grch37:
-            url: https://drive.google.com/uc?id=1tOyPmzgXkSZjPJQOojFQxUP8JlQuQqLq
-            file: 'pcgr.databundle.grch37.20180422.tgz'
+    # release: v0.6.1
+    # number_release: 0.6.1
+    # databundle:
+    #     grch38:
+    #         url: https://drive.google.com/uc?id=1cKq-rgSNCYPCUJ38pCi_xy6_PJH-FZWD
+    #         file: 'pcgr.databundle.grch38.20180422.tgz'
+    #     grch37:
+    #         url: https://drive.google.com/uc?id=1tOyPmzgXkSZjPJQOojFQxUP8JlQuQqLq
+    #         file: 'pcgr.databundle.grch37.20180422.tgz'
 
     release: v0.6.2.1
     number_release: 0.6.2.1
