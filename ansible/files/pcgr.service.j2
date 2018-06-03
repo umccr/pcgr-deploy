@@ -6,7 +6,7 @@ After=network-online.target
 Type=simple
 WorkingDirectory= /home/{{ os_user }}
 EnvironmentFile=/opt/pcgr.env
-ExecStart=/bin/sh -c '. {{ pcgr.mount }}/pcgr/venv/bin/activate && {{ pcgr.mount }}/pcgr/venv/bin/python3 {{ pcgr.mount }}/pcgr/pcgr_consumer.py $PCGR_BUCKET $AWS_REGION $PCGR_QUEUE $PCGR_RETRY $PCGR_IDLE_SECONDS /home/{{ os_user }}'
+ExecStart=/bin/sh -c '. {{ pcgr.mount }}/pcgr/venv/bin/activate && {{ pcgr.mount }}/pcgr/venv/bin/python3 {{ pcgr.mount }}/pcgr/pcgr_consumer.py ${PCGR_BUCKET} ${AWS_REGION} ${PCGR_QUEUE} ${PCGR_RETRY} ${PCGR_IDLE_SECONDS} /home/{{ os_user }}'
 
 [Install]
 WantedBy=multi-user.target
