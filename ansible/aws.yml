@@ -15,6 +15,7 @@
          image: "{{ image_id }}"
          region: "{{ aws.region }}"
          zone: "{{ aws.zone }}"
+         user_data: "{{ pcgr_instance_user_data }}"
          wait: yes
          count_tag:
            name: pcgr

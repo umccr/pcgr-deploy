@@ -5,6 +5,7 @@ timezone: Australia/Melbourne
 image_id: ami-XXXXXXXXXXXXXX
 vcf_bucket: default_pcgr_bucket
 instance_profile_name: default_pcgr_instance_profile
+pcgr_instance_user_data: ""
 
 #Amazon
 aws:
