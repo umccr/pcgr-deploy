@@ -1,5 +1,5 @@
 ---
- - name: Install noauth Google drive downloader
+- name: Install noauth Google drive downloader
    pip:
      name: git+https://github.com/brainstorm/gdown@refactor_and_python3
 
