@@ -66,7 +66,9 @@ pcgr:
     #databundle_url: https://drive.google.com/uc?id=1NSeMWpLVMBcCEDYpOLsuWSnKfZEaamip
     #databundle: 'pcgr.databundle.GRCh37.20171117.tgz'
 
-    # XXX: First release with two genome assemblies, breaks backward compat on databundle role
+    # XXX: First release with two genome assemblies, breaks backward compat on 
+    # databundle role for previous releases, unfortunately
+    #
     # release: v0.6.1
     # number_release: 0.6.1
     # databundle:
