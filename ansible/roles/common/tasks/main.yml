@@ -91,6 +91,7 @@
       - htop
       - python3-docker
       - python3-venv
+      - python3-pip
 
 # XXX Debian specific, the default pkg does not support this
 #- name: Upgrade all packages to the latest version
