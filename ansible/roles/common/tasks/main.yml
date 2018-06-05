@@ -114,6 +114,7 @@
       - awscli
 
 - name: "Adding SSH UMCCR team public keys to the instance"
+  become: false
   shell: |
       org_ssh_keys=$(curl -s https://api.github.com/orgs/umccr/members | jq -r .[].html_url | sed 's/$/.keys/')
       echo $org_ssh_keys
