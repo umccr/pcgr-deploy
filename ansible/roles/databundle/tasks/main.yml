@@ -1,7 +1,7 @@
 ---
 - name: Install noauth Google drive downloader
-   pip:
-     name: git+https://github.com/brainstorm/gdown@refactor_and_python3
+  pip:
+    name: git+https://github.com/brainstorm/gdown@refactor_and_python3
 
 - name: Download/unzip/unpack PCGRs data pack for GRCh37
   shell: "gdown {{ pcgr.databundle.grch37.url }} -s | tar xvfz -"
