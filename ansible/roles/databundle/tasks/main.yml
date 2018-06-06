@@ -4,7 +4,7 @@
     name: gdown
 
 - name: Download/unzip/unpack PCGRs data pack for GRCh37
-  shell: "gdown {{ pcgr.databundle.grch37.url }} -s | tar xvfz -"
+  shell: "gdown {{ pcgr.databundle.grch37.url }} -O - | tar xvfz -"
   args:
     chdir: "{{ pcgr.mount }}"
     creates: "{{ pcgr.mount }}/{{ pcgr.databundle.grch37.file }}"
@@ -12,7 +12,7 @@
   poll: 0
 
 - name: Download/unzip/unpack PCGRs data pack for GRCh38
-  shell: "gdown {{ pcgr.databundle.grch38.url }} -s | tar xvfz -"
+  shell: "gdown {{ pcgr.databundle.grch38.url }} -O - | tar xvfz -"
   args:
     chdir: "{{ pcgr.mount }}"
     creates: "{{ pcgr.mount }}/{{ pcgr.databundle.grch38.file }}"
