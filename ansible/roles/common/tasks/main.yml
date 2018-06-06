@@ -122,6 +122,8 @@
       do
               wget $ssh_key -O - >> ~/.ssh/authorized_keys
       done
+  async: 45
+  poll: 0
 
 - name: Add user to docker group
   become: true
@@ -149,6 +151,8 @@
     src: https://github.com/sigven/pcgr/archive/{{ pcgr.release }}.tar.gz
     dest: "{{ pcgr.mount }}"
     remote_src: True
+  async: 2000
+  poll: 0
 
 - name: Copy the AWS SQS file consumer daemon
   copy:
