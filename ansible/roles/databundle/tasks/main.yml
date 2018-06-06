@@ -8,6 +8,8 @@
   args:
     chdir: "{{ pcgr.mount }}"
     creates: "{{ pcgr.mount }}/{{ pcgr.databundle.grch37.file }}"
+  async: 1500 # 20 minutes max
+  poll: 0
 
 - name: Download/unzip/unpack PCGRs data pack for GRCh38
   shell: "gdown {{ pcgr.databundle.grch38.url }} -s | tar xvfz -"
