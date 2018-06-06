@@ -145,14 +145,14 @@
     name: sigven/pcgr
     state: present
     tag: "{{ pcgr.number_release }}"
+  async: 2000
+  poll: 0
 
 - name: Download and unpack PCGR software, release "{{ pcgr.release }}"
   unarchive:
     src: https://github.com/sigven/pcgr/archive/{{ pcgr.release }}.tar.gz
     dest: "{{ pcgr.mount }}"
     remote_src: True
-  async: 2000
-  poll: 0
 
 - name: Copy the AWS SQS file consumer daemon
   copy:
